@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="./Sal-Shield-Project-Logo.png" alt="SAL-SHIELD Logo" width="450" height="450"/>
+<img src="./Sal-Shield-Project-Logo.png" alt="SAL-SHIELD Logo" width="350" height="350"/>
 
 # 🌲🌳 SAL-SHIELD 🌳🌲
 
