@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.env
+uploads/
+*.db
+models/*.h5
+models/*.pkl
+models/*.onnx
+venv/
+.venv/

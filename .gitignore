@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+env/
+*.egg-info/
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Database & uploads
+backend/*.db
+backend/uploads/
+backend/dataset/
+
+# ML model files (large — store separately)
+backend/models/*.h5
+backend/models/training_curves.png
+
+# Node
+frontend/node_modules/
+frontend/dist/
+frontend/.pnp
+frontend/.pnp.js
+
+# System
+.DS_Store
+Thumbs.db
+*.log
+*.swp
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Vercel
+.vercel

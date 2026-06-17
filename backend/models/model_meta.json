@@ -1,0 +1,57 @@
+{
+  "features": [
+    "ndvi_baseline",
+    "ndvi_prestress",
+    "ndvi_peak",
+    "ndvi_current",
+    "ndmi_baseline",
+    "ndmi_prestress",
+    "ndmi_peak",
+    "ndmi_current",
+    "ndvi_diff",
+    "ndmi_diff",
+    "nbr_baseline",
+    "nbr_current",
+    "nbr_peak",
+    "sbvi_raw",
+    "ndvi_total_drop",
+    "ndmi_total_drop",
+    "nbr_change",
+    "ndvi_ratio",
+    "ndmi_ratio",
+    "ndvi_diff_e",
+    "ndmi_diff_e"
+  ],
+  "classes": [
+    "healthy",
+    "stressed",
+    "infected"
+  ],
+  "rf_cv_accuracy": 88.8,
+  "rf_cv_std": 4.7,
+  "xgb_cv_accuracy": 97.5,
+  "rf_train_accuracy": 100.0,
+  "xgb_train_accuracy": 100.0,
+  "rf_accuracy": 88.8,
+  "xgb_accuracy": 97.5,
+  "ensemble_accuracy": 93.1,
+  "training_samples": 80,
+  "validation": "5-fold stratified cross-validation",
+  "sbvi_formula": "(NDVI_stress\u00d70.35) + (NDMI_stress\u00d70.35) + (NBR_stress\u00d70.20) + (SAR_stress\u00d70.10)",
+  "thresholds": {
+    "very_low": "<0.45",
+    "low": "0.45-0.58",
+    "moderate": "0.58-0.68",
+    "high": "0.68-0.78",
+    "very_high": ">0.78"
+  },
+  "top_features": [
+    "sbvi_raw",
+    "ndmi_diff",
+    "ndmi_diff_e",
+    "nbr_change",
+    "ndmi_total_drop"
+  ],
+  "note": "Accuracy on 5-fold CV using SBVI pseudo-labels. Improves with FRI ground truth data.",
+  "cnn_accuracy": 92.7
+}
