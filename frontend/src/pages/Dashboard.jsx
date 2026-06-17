@@ -209,30 +209,34 @@ export default function Dashboard() {
             </MapContainer>
           </div>
 
-          {/* NDVI chart */}
-          <div style={{padding:'12px 18px', borderTop:'1px solid var(--border)'}}>
-            <div style={{fontSize:11,color:'var(--text-muted)',marginBottom:8,display:'flex',alignItems:'center',gap:6}}>
-              <TrendingDown size={12} style={{color:'var(--high)'}}/> 
-              NDVI decline · Real Sentinel-2 values · Oct 2023 → Jun 2025
+{/* NDVI chart */}
+          <div style={{ padding: '20px 24px 28px 24px', borderTop: '1px solid var(--border)', background: 'rgba(6, 78, 59, 0.1)', width: '100%' }}>
+            <div style={{ fontSize: '12px', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <TrendingDown size={14} style={{ color: 'var(--high)' }} /> 
+              NDVI & NDMI Canopy Health Decline Vector · Real Sentinel-2 Values (Oct 2023 → Jun 2025)
             </div>
-            <ResponsiveContainer width="100%" height={220}>
-              <AreaChart data={NDVI_TIMESERIES} margin={{top:15,right:15,left:15,bottom:15}}>
-                <defs>
-                  <linearGradient id="ndvig" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#52C778" stopOpacity={0.25}/>
-                    <stop offset="95%" stopColor="#52C778" stopOpacity={0}/>
-                  </linearGradient>
-                  <linearGradient id="ndmig" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#6BA8D0" stopOpacity={0.25}/>
-                    <stop offset="95%" stopColor="#6BA8D0" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <Area type="monotone" dataKey="ndvi" stroke="#52C778" fill="url(#ndvig)" strokeWidth={2} dot={{r:3}} name="NDVI"/>
-                <Area type="monotone" dataKey="ndmi" stroke="#6BA8D0" fill="url(#ndmig)" strokeWidth={2} dot={{r:3}} name="NDMI"/>
-                <XAxis dataKey="month" tick={{fontSize:10}}/>
-                <YAxis domain={[-0.1,0.8]} tick={{fontSize:10}} stroke="var(--text-muted)"/>
-                <Tooltip content={<TT/>}/>
-              </AreaChart>
+            <div style={{ width: '100%', height: '260px', boxSizing: 'border-box' }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={NDVI_TIMESERIES} margin={{ top: 10, right: 15, left: -22, bottom: 5 }}>
+                  <defs>
+                    <linearGradient id="ndvig" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#52C778" stopOpacity={0.25} />
+                      <stop offset="95%" stopColor="#52C778" stopOpacity={0} />
+                    </linearGradient>
+                    <linearGradient id="ndmig" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#6BA8D0" stopOpacity={0.25} />
+                      <stop offset="95%" stopColor="#6BA8D0" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <Area type="monotone" dataKey="ndvi" stroke="#52C778" fill="url(#ndvig)" strokeWidth={2.5} dot={{ r: 4 }} name="NDVI" />
+                  <Area type="monotone" dataKey="ndmi" stroke="#6BA8D0" fill="url(#ndmig)" strokeWidth={2.5} dot={{ r: 4 }} name="NDMI" />
+                  <XAxis dataKey="month" tick={{ fontSize: 11, fill: 'var(--text-muted)' }} dy={10} axisLine={{ stroke: 'var(--border)' }} />
+                  <YAxis domain={[-0.1, 0.8]} tick={{ fontSize: 11, fill: 'var(--text-muted)' }} axisLine={{ stroke: 'var(--border)' }} tickLine={false} />
+                  <Tooltip content={<TT />} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
             </ResponsiveContainer>
           </div>
         </div>
