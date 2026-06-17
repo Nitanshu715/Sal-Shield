@@ -45,7 +45,7 @@ function Shell() {
       {/* Topbar */}
       <header className="topbar">
         <NavLink to="/" className="topbar-logo">
-          <div className="topbar-logo-shield">🛡</div>
+          <img src="/Sal-Shield-Logo.png" alt="SAL-SHIELD Logo" className="topbar-logo-shield" style={{ objectFit: 'contain' }} />
           <span className="topbar-logo-text">SAL-<span>SHIELD</span></span>
         </NavLink>
         <div className="topbar-right">
