@@ -27,6 +27,7 @@
 
 ### 🛰️ Satellite Intelligence • 🤖 Machine Learning • 🌍 WebGIS • 📱 Offline PWA
 
+</br>
 </div>
 
 **AI & GIS-Based Forest Infestation Early Warning Platform**
