@@ -462,7 +462,6 @@ SDE @ SapMen C. · Founder, MediFlow AI
 ---
 
 ### Chandreyee Dey Roy
-**B.Tech · UPES Dehradun**
 
 *Contributions: Sentinel-2 satellite data acquisition and preprocessing · NDVI / NDMI / NBR index computation across 4 temporal scenes · SBVI formula derivation and validation · GeoTIFF raster pipeline · QGIS and Google Earth Engine workflows · SBVI_raw.tif and SBVI_dissolved.shp generation*
 
@@ -472,13 +471,13 @@ SDE @ SapMen C. · Founder, MediFlow AI
 **Prof. Nadeem Yousuf Khan**  
 *UPES Dehradun*
 
-*Project initiated and supervised under Prof. Khan's guidance in response to the active Sal borer ecological crisis in Uttarakhand, targeting presentation at the HILL Conference (October 2025).*
+*Project initiated and supervised under Prof. Khan's guidance in response to the active Sal borer ecological crisis in Uttarakhand, targeting presentation at the HILL Conference (October 2026).*
 
 ---
 
 ## Conference Target
 
-**HILL Conference · October 2025**  
+**HILL Conference · October 2026**  
 Himalayan Institute of Languages and Literature · Uttarakhand
 
 Follow-up targets: IEEE IGARSS · Springer Environmental Monitoring and Assessment
@@ -495,7 +494,7 @@ MIT License — open for research, educational, and forest management use.
 
 <div align="center">
 
-**SAL-SHIELD** · Built at UPES Dehradun · 2025  
+**SAL-SHIELD** · Built at UPES Dehradun · 2026
 *For the Sal forests of Uttarakhand*
 
 `RF 88.8%` · `XGB 97.5%` · `CNN 92.7%` · `Cost ₹0`
