@@ -1,16 +1,38 @@
 <div align="center">
 
-<img src="https://salshield.com/logo.png" width="220"/>
+<img src="https://salshield.com/logo.png" width="260"/>
 
-<br>
+# 🌲🌳 SAL-SHIELD 🌳🌲
 
-# 🌲 SAL-SHIELD
+## AI-Powered Forest Intelligence Platform
 
-### 🛰️ AI • GIS • Satellite Intelligence • Forest Protection
+<p>
+  <img src="https://img.shields.io/badge/Frontend-Vercel-black?style=for-the-badge&logo=vercel">
+  <img src="https://img.shields.io/badge/Backend-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white">
+  <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black">
+  <img src="https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask">
+  <img src="https://img.shields.io/badge/TensorFlow-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white">
+</p>
 
-<img src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=28&pause=1000&color=22C55E&center=true&vCenter=true&width=900&lines=Protecting+Himalayan+Sal+Forests;AI-Powered+Early+Warning+Platform;Satellite+Intelligence+for+Forest+Protection;Built+with+ML+%2B+GIS+%2B+PWA"/>
+<p>
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white">
+  <img src="https://img.shields.io/badge/XGBoost-EF4444?style=for-the-badge">
+  <img src="https://img.shields.io/badge/Leaflet-199900?style=for-the-badge&logo=leaflet">
+  <img src="https://img.shields.io/badge/PWA-5A0FC8?style=for-the-badge">
+  <img src="https://img.shields.io/badge/GIS-Sentinel--2-2563EB?style=for-the-badge">
+</p>
+
+<p>
+  <img src="https://img.shields.io/badge/ML%20Accuracy-97.5%25-success?style=for-the-badge">
+  <img src="https://img.shields.io/badge/CNN-92.7%25-blue?style=for-the-badge">
+  <img src="https://img.shields.io/badge/Cost-₹0-brightgreen?style=for-the-badge">
+  <img src="https://img.shields.io/badge/Live-salshield.com-orange?style=for-the-badge">
+</p>
+
+### 🛰️ Satellite Intelligence • 🤖 Machine Learning • 🌍 WebGIS • 📱 Offline PWA
 
 </div>
+
 
 
 **AI & GIS-Based Forest Infestation Early Warning Platform**
