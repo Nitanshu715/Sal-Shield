@@ -209,7 +209,7 @@ export default function Dashboard() {
             </MapContainer>
           </div>
 
-{/* NDVI chart */}
+      {/* NDVI chart */}
           <div style={{ padding: '20px 24px 28px 24px', borderTop: '1px solid var(--border)', background: 'rgba(6, 78, 59, 0.1)', width: '100%' }}>
             <div style={{ fontSize: '12px', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <TrendingDown size={14} style={{ color: 'var(--high)' }} /> 
@@ -237,12 +237,10 @@ export default function Dashboard() {
               </ResponsiveContainer>
             </div>
           </div>
-            </ResponsiveContainer>
-          </div>
         </div>
 
         {/* Side panel */}
-        <div style={{display:'flex',flexDirection:'column',gap:14}}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
 
           {/* SBVI breakdown */}
           <div className="card">
