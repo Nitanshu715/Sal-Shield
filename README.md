@@ -43,8 +43,11 @@
 
 ---
 
-*Developed under the guidance of **Prof. Nadeem Yousuf Khan** · UPES Dehradun*  
-*Targeting **HILL Conference** · October 2025*
+*Developed under the guidance of **Prof. Nadeem Yousuf Khan** · UPES Dehradun* *Targeting **HILL Conference** · October 2026* ---
+
+### **Authors & Contributors**
+* **Nitanshu Tak** — Full Stack Infrastructure & Machine Learning
+* **Chandreyee Dey Roy** — GIS Processing & Machine Learning
 
 </div>
 
