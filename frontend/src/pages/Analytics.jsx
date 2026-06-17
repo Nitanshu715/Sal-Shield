@@ -1,8 +1,4 @@
-import {
-  LineChart, Line, AreaChart, Area, BarChart, Bar,
-  XAxis, YAxis, CartesianGrid, Tooltip, Legend,
-  ResponsiveContainer, ReferenceLine, Cell
-} from 'recharts'
+import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, Cell } from 'recharts'
 import { TrendingDown, Activity, BarChart2 } from 'lucide-react'
 import { NDVI_TIMESERIES } from '../data/forestData'
 
