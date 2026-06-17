@@ -735,3 +735,18 @@ html, body, #root {
   .stats-grid { grid-template-columns: 1fr 1fr; }
   .stat-value { font-size: 22px; }
 }
+
+/* ─── MOBILE PWA LOGO REALIGNMENT & RESIZING ──────────────────────────────── */
+@media (max-width: 768px) {
+  .topbar-logo {
+    padding: 6px 0 0 8px !important; /* Spaces out the logo bounding box container on phone screens */
+    gap: 12px !important;            /* Adds uniform layout room between the larger shield asset and text */
+  }
+
+  .topbar-logo img {
+    margin-top: 5px !important;      /* Pushes the larger image down to perfectly match mobile line-height baselines */
+    width: 52px !important;          /* Scales up the image scale from 48px to a crisp 52px */
+    height: 52px !important;         /* Scales up the image scale from 48px to a crisp 52px */
+    object-fit: contain !important;
+  }
+}
