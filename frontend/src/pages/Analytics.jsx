@@ -1,7 +1,7 @@
 import {
   LineChart, Line, AreaChart, Area, BarChart, Bar,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend,
-  ResponsiveContainer, ReferenceLine
+  ResponsiveContainer, ReferenceLine, Cell
 } from 'recharts'
 import { TrendingDown, Activity, BarChart2 } from 'lucide-react'
 import { NDVI_TIMESERIES } from '../data/forestData'
@@ -115,7 +115,7 @@ export default function Analytics() {
                 <ReferenceLine y={33} stroke="#E8B84B" strokeDasharray="4 4" />
                 <Bar dataKey="sbvi" name="SBVI Score" radius={[4, 4, 0, 0]}>
                   {RISK_DIST.map((entry, i) => (
-                    <rect key={i} fill={BAR_COLOR(entry.sbvi)} />
+                    <Cell key={`cell-${i}`} fill={BAR_COLOR(entry.sbvi)} />
                   ))}
                 </Bar>
               </BarChart>
