@@ -40,12 +40,23 @@ function Shell() {
     }
   }, [online])
 
-  return (
+return (
     <div className="app">
       {/* Topbar */}
       <header className="topbar">
-        <NavLink to="/" className="topbar-logo">
-          <img src="/Sal-Shield-Logo.png" alt="SAL-SHIELD Logo" className="topbar-logo-shield" style={{ objectFit: 'contain' }} />
+        <NavLink to="/" className="topbar-logo" style={{ gap: '12px' }}>
+          <img 
+            src="/Sal-Shield-Logo.png" 
+            alt="SAL-SHIELD Logo" 
+            style={{ 
+              objectFit: 'contain', 
+              width: '42px', 
+              height: '42px', 
+              background: 'none', 
+              border: 'none',
+              padding: '0'
+            }} 
+          />
           <span className="topbar-logo-text">SAL-<span>SHIELD</span></span>
         </NavLink>
         <div className="topbar-right">
