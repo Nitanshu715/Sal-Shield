@@ -50,12 +50,12 @@ return (
             alt="SAL-SHIELD Logo" 
             style={{ 
               objectFit: 'contain', 
-              width: '56px',      {/* Increased from 42px to 56px to make it noticeably bigger */}
-              height: '56px',     {/* Increased from 42px to 56px */}
+              width: '56px',      /* Increased from 42px to 56px to make it noticeably bigger */
+              height: '56px',     /* Increased from 42px to 56px */
               background: 'none', 
               border: 'none',
               padding: '0',
-              marginTop: '-2px'   {/* Fine-tunes optical alignment with the text */}
+              marginTop: '-2px'   /* Fine-tunes optical alignment with the text */
             }} 
           />
           <span className="topbar-logo-text">SAL-<span>SHIELD</span></span>
