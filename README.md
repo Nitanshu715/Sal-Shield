@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://salshield.com/logo.png" width="260"/>
+<img src="./Sal-Shield-Project-Logo.png" alt="SAL-SHIELD Logo" width="260"/>
 
 # 🌲🌳 SAL-SHIELD 🌳🌲
 
