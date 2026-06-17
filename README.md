@@ -2,10 +2,6 @@
 
 <img src="./Sal-Shield-Project-Logo.png" alt="SAL-SHIELD Logo" width="350" height="350"/>
 
-# 🌲🌳 SAL-SHIELD 🌳🌲
-
-## AI-Powered Forest Intelligence Platform
-
 <p>
   <img src="https://img.shields.io/badge/Frontend-Vercel-black?style=for-the-badge&logo=vercel">
   <img src="https://img.shields.io/badge/Backend-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white">
@@ -33,7 +29,7 @@
 
 </div>
 
-
+# 🌲🌳 SAL-SHIELD 🌳🌲
 
 **AI & GIS-Based Forest Infestation Early Warning Platform**
 
