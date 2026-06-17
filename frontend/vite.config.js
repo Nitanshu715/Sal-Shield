@@ -23,7 +23,7 @@ export default defineConfig({
             src: '/Sal-Shield-Logo.png', 
             sizes: '192x192', 
             type: 'image/png',
-            purpose: 'any' // Direct icon layer handling
+            purpose: 'any'
           },
           { 
             src: '/Sal-Shield-Logo.png', 
@@ -35,7 +35,7 @@ export default defineConfig({
             src: '/Sal-Shield-Logo.png', 
             sizes: '192x192', 
             type: 'image/png',
-            purpose: 'maskable' // Mobile adaptive safe-zone allocation
+            purpose: 'maskable'
           },
           { 
             src: '/Sal-Shield-Logo.png', 
