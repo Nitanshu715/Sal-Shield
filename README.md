@@ -29,8 +29,6 @@
 
 </div>
 
-# 🌲🌳 SAL-SHIELD 🌳🌲
-
 **AI & GIS-Based Forest Infestation Early Warning Platform**
 
 *Protecting Himalayan Sal Forests through Satellite Intelligence*
