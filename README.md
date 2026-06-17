@@ -3,6 +3,9 @@
 <img src="./Sal-Shield-Project-Logo.png" alt="SAL-SHIELD Logo" width="350" height="350"/>
 
 <p>
+  <a href="https://sal-shield.vercel.app/" target="_blank">
+    <img src="https://img.shields.io/badge/Live%20Demo-sal--shield.vercel.app-orange?style=for-the-badge&logo=vercel&logoColor=white">
+  </a>
   <img src="https://img.shields.io/badge/Frontend-Vercel-black?style=for-the-badge&logo=vercel">
   <img src="https://img.shields.io/badge/Backend-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white">
   <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black">
