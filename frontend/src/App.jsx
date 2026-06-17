@@ -44,18 +44,18 @@ return (
     <div className="app">
       {/* Topbar */}
       <header className="topbar">
-        <NavLink to="/" className="topbar-logo" style={{ gap: '14px', display: 'flex', alignItems: 'center' }}>
+        <NavLink to="/" className="topbar-logo" style={{ gap: '14px', display: 'flex', alignItems: 'center', padding: '6px 0 0 10px' }}> {/* Modified padding to add top and left alignment room */}
           <img 
             src="/Sal-Shield-Logo.png" 
             alt="SAL-SHIELD Logo" 
             style={{ 
               objectFit: 'contain', 
-              width: '56px',      /* Increased from 42px to 56px to make it noticeably bigger */
-              height: '56px',     /* Increased from 42px to 56px */
+              width: '56px',      /* Commanding commanding profile */
+              height: '56px',     
               background: 'none', 
               border: 'none',
               padding: '0',
-              marginTop: '-2px'   /* Fine-tunes optical alignment with the text */
+              marginTop: '4px'   /* Adds top margin to push the logo down slightly */
             }} 
           />
           <span className="topbar-logo-text">SAL-<span>SHIELD</span></span>
