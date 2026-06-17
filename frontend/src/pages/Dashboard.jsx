@@ -215,8 +215,8 @@ export default function Dashboard() {
               <TrendingDown size={12} style={{color:'var(--high)'}}/> 
               NDVI decline · Real Sentinel-2 values · Oct 2023 → Jun 2025
             </div>
-            <ResponsiveContainer width="100%" height={70}>
-              <AreaChart data={NDVI_TIMESERIES} margin={{top:2,right:0,left:0,bottom:0}}>
+            <ResponsiveContainer width="100%" height={220}>
+              <AreaChart data={NDVI_TIMESERIES} margin={{top:15,right:15,left:15,bottom:15}}>
                 <defs>
                   <linearGradient id="ndvig" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#52C778" stopOpacity={0.25}/>
@@ -230,7 +230,7 @@ export default function Dashboard() {
                 <Area type="monotone" dataKey="ndvi" stroke="#52C778" fill="url(#ndvig)" strokeWidth={2} dot={{r:3}} name="NDVI"/>
                 <Area type="monotone" dataKey="ndmi" stroke="#6BA8D0" fill="url(#ndmig)" strokeWidth={2} dot={{r:3}} name="NDMI"/>
                 <XAxis dataKey="month" tick={{fontSize:10}}/>
-                <YAxis hide domain={[-0.1,0.8]}/>
+                <YAxis domain={[-0.1,0.8]} tick={{fontSize:10}} stroke="var(--text-muted)"/>
                 <Tooltip content={<TT/>}/>
               </AreaChart>
             </ResponsiveContainer>
