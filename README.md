@@ -12,6 +12,12 @@
   <img src="https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask">
   <img src="https://img.shields.io/badge/TensorFlow-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white">
 </p>
+  <img src="https://img.shields.io/badge/Frontend-Vercel-black?style=for-the-badge&logo=vercel">
+  <img src="https://img.shields.io/badge/Backend-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white">
+  <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black">
+  <img src="https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask">
+  <img src="https://img.shields.io/badge/TensorFlow-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white">
+</p>
 
 <p>
   <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white">
