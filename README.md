@@ -1,10 +1,8 @@
 <div align="center">
 
 <a href="https://sal-shield.vercel.app/" target="_blank">
-  <img src="./Sal-Shield-Project-Logo.png" alt="SAL-SHIELD Emblem" width="240" height="240" style="filter: drop-shadow(0px 8px 24px rgba(143, 191, 90, 0.25));"/>
+  <img src="./Sal-Shield-Project-Logo.png" alt="SAL-SHIELD Emblem" width="280" height="280" style="filter: drop-shadow(0px 8px 24px rgba(143, 191, 90, 0.25));"/>
 </a>
-
-# 🌲 SAL-SHIELD
 ### AI & WebGIS Early Warning Platform for Forest Infestation Control
 
 **Protecting Himalayan *Shorea robusta* (Sal) Ecosystems via Sentinel-2 Satellite Intelligence & Edge Vision AI**
