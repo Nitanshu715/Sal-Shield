@@ -32,7 +32,7 @@ export default defineConfig({
             purpose: 'any' 
           },
           { 
-            src: '/Sal-Shield-Project-Logo.png', 
+            src: '/Sal-Shield-Logo.png', 
             sizes: '512x512', 
             type: 'image/png',
             purpose: 'maskable'

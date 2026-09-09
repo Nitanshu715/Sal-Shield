@@ -135,169 +135,198 @@ export default function FieldReport() {
       </div>
 
       <div className="field-page">
-        <GPSBlock {...gps} />
+        <div className="field-grid">
+          {/* Left Column: GPS & Capture Area */}
+          <div className="field-col-capture">
+            <GPSBlock {...gps} />
 
-        {!done ? (
-          <>
-            {/* Camera zone */}
-            <div className={`camera-zone${image?' has-image':''}`} onClick={()=>!image&&inputRef.current?.click()}>
-              {image
-                ? <img src={image} alt="Tree" className="camera-preview"/>
-                : <>
-                    <div className="camera-icon-ring"><Camera size={26}/></div>
-                    <div style={{fontWeight:600, color:'var(--text-primary)', fontSize:15, marginBottom:4}}>
-                      Tap to photograph tree
-                    </div>
-                    <div style={{fontSize:12, color:'var(--text-muted)'}}>
-                      Opens camera on phone · or pick from gallery
-                    </div>
-                    <div style={{
-                      marginTop:14, display:'inline-flex', alignItems:'center', gap:5,
-                      padding:'5px 12px', background:'var(--accent-dim)',
-                      border:'1px solid var(--border-md)', borderRadius:20,
-                      fontSize:11, color:'var(--text-secondary)'
-                    }}>
-                      <Smartphone size={11}/> Works offline too
-                    </div>
-                  </>
-              }
-              <input ref={inputRef} type="file" accept="image/*" capture="environment" onChange={pick} style={{display:'none'}}/>
-            </div>
-
-            {image && !result && !loading && (
-              <div style={{display:'flex',gap:8,marginTop:10}}>
-                <button className="btn btn-ghost" onClick={reset}>Retake</button>
-                <button className="btn btn-primary" style={{flex:1}} onClick={analyse}>
-                  <Leaf size={14}/> Analyse Tree
-                </button>
-              </div>
-            )}
-
-            {loading && (
-              <div style={{
-                background:'var(--bg-card)', border:'1px solid var(--border)',
-                borderRadius:'var(--r-lg)', padding:'28px 20px',
-                textAlign:'center', marginTop:12
-              }}>
-                <div style={{
-                  width:48, height:48, borderRadius:'50%',
-                  background:'var(--accent-dim)', display:'flex',
-                  alignItems:'center', justifyContent:'center',
-                  margin:'0 auto 12px', color:'var(--accent)'
-                }}>
-                  <RefreshCw size={22} style={{animation:'spin 1s linear infinite'}}/>
-                </div>
-                <div style={{fontWeight:600, color:'var(--text-primary)', marginBottom:3}}>Analysing…</div>
-                <div style={{fontSize:12, color:'var(--text-muted)'}}>Running vegetation stress model</div>
-              </div>
-            )}
-
-            {result && info && !loading && (
-              <div className="result-box" style={{border:`1px solid ${info.color}44`}}>
-                {/* Header */}
-                <div className="result-header">
-                  <div className="result-emoji" style={{background:`${info.color}18`,border:`2px solid ${info.color}44`}}>
-                    {info.emoji}
-                  </div>
-                  <div style={{flex:1}}>
-                    <div style={{fontSize:22,fontWeight:700,color:info.color}}>{info.label}</div>
-                    <div style={{fontSize:11,color:'var(--text-muted)'}}>AI Tree Classification</div>
-                  </div>
-                  <div style={{textAlign:'right'}}>
-                    <div style={{fontSize:28,fontWeight:700,color:'var(--text-primary)',fontFamily:'var(--font-mono)',lineHeight:1}}>
-                      {result.confidence}%
-                    </div>
-                    <div style={{fontSize:10,color:'var(--text-muted)'}}>confidence</div>
-                  </div>
-                </div>
-
-                {/* Confidence bar */}
-                <div className="conf-bar">
-                  <div className="conf-fill" style={{width:`${result.confidence}%`,background:info.color}}/>
-                </div>
-
-                {/* Multi-class probability breakdown */}
-                {result.probabilities && (
-                  <div style={{ margin: '0 18px 14px', background: 'var(--bg-elevated)', borderRadius: 'var(--r)', padding: '10px 14px' }}>
-                    <div style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 8 }}>
-                      Class Probability Distribution · {result.model || 'CNN Model'}
-                    </div>
-                    {[
-                      { key: 'healthy', label: 'Healthy Canopy', color: 'var(--low)', val: result.probabilities.healthy || 0 },
-                      { key: 'stressed', label: 'Vegetative Stress', color: 'var(--mod)', val: result.probabilities.stressed || 0 },
-                      { key: 'infected', label: 'Sal Borer Infested', color: 'var(--high)', val: result.probabilities.infected || 0 },
-                    ].map(c => (
-                      <div key={c.key} style={{ marginBottom: 6 }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, marginBottom: 2 }}>
-                          <span style={{ color: 'var(--text-secondary)' }}>{c.label}</span>
-                          <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, color: c.color }}>{c.val}%</span>
-                        </div>
-                        <div style={{ height: 5, background: 'var(--bg-card)', borderRadius: 3, overflow: 'hidden' }}>
-                          <div style={{ width: `${Math.min(100, c.val)}%`, height: '100%', background: c.color, borderRadius: 3, transition: 'width 0.6s var(--ease)' }} />
-                        </div>
+            {!done ? (
+              <div className="field-card-panel">
+                <div className={`camera-zone${image ? ' has-image' : ''}`} onClick={() => !image && inputRef.current?.click()}>
+                  {image ? (
+                    <div className="camera-preview-wrap">
+                      <img src={image} alt="Sal Tree Preview" className="camera-preview" />
+                      <div className="preview-badge">
+                        <Leaf size={12} /> Sal Specimen Ready
                       </div>
-                    ))}
+                    </div>
+                  ) : (
+                    <div className="camera-empty-state">
+                      <div className="camera-icon-ring"><Camera size={28}/></div>
+                      <div className="camera-prompt-title">
+                        Take or Upload Tree Photo
+                      </div>
+                      <div className="camera-prompt-sub">
+                        High-resolution bark, canopy, or trunk photo
+                      </div>
+                      <div className="camera-status-pill">
+                        <Smartphone size={12}/> Instant Mobile & Desktop AI
+                      </div>
+                    </div>
+                  )}
+                  <input ref={inputRef} type="file" accept="image/*" capture="environment" onChange={pick} style={{display:'none'}}/>
+                </div>
+
+                {image && !result && !loading && (
+                  <div className="field-action-bar">
+                    <button className="btn btn-ghost btn-action" onClick={reset}>
+                      <RefreshCw size={14}/> Retake Photo
+                    </button>
+                    <button className="btn btn-primary btn-action" onClick={analyse}>
+                      <Leaf size={15}/> Analyse Tree Health
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : null}
+          </div>
+
+          {/* Right Column: AI Analysis & Diagnosis Report */}
+          <div className="field-col-result">
+            {!done ? (
+              <>
+                {loading && (
+                  <div className="analysis-loading-card">
+                    <div className="analysis-spinner-wrap">
+                      <RefreshCw size={26} style={{animation:'spin 1s linear infinite'}}/>
+                    </div>
+                    <div style={{fontSize:16, fontWeight:700, color:'var(--text-primary)', marginBottom:4}}>
+                      Analysing Tree Specimen…
+                    </div>
+                    <div style={{fontSize:12.5, color:'var(--text-muted)'}}>
+                      Deep learning CNN evaluating vegetative stress & Sal borer symptoms
+                    </div>
                   </div>
                 )}
 
-                {/* Advice */}
-                <div className="result-advice" style={{borderLeft:`3px solid ${info.color}`}}>
-                  {info.advice}
-                </div>
+                {result && info && !loading && (
+                  <div className="result-box" style={{border:`1px solid ${info.color}55`}}>
+                    {/* Header */}
+                    <div className="result-header">
+                      <div className="result-emoji" style={{background:`${info.color}18`, border:`2px solid ${info.color}44`}}>
+                        {info.emoji}
+                      </div>
+                      <div style={{flex:1}}>
+                        <div style={{fontSize:22, fontWeight:700, color:info.color, letterSpacing:'-0.3px'}}>{info.label}</div>
+                        <div style={{fontSize:11.5, color:'var(--text-muted)'}}>AI Diagnostic Classification</div>
+                      </div>
+                      <div style={{textAlign:'right'}}>
+                        <div style={{fontSize:28, fontWeight:700, color:'var(--text-primary)', fontFamily:'var(--font-mono)', lineHeight:1}}>
+                          {result.confidence}%
+                        </div>
+                        <div style={{fontSize:10, textTransform:'uppercase', letterSpacing:'0.5px', color:'var(--text-muted)', marginTop:2}}>confidence</div>
+                      </div>
+                    </div>
 
-                {/* Form */}
-                <div className="result-form">
-                  <div className="form-group">
-                    <label className="form-label">Severity Assessment</label>
-                    <select className="form-select" value={severity} onChange={e=>setSeverity(e.target.value)}>
-                      <option value="low">Low — isolated, no spread</option>
-                      <option value="moderate">Moderate — small cluster</option>
-                      <option value="high">High — wide area affected</option>
-                      <option value="critical">Critical — immediate action</option>
-                    </select>
+                    {/* Confidence bar */}
+                    <div className="conf-bar">
+                      <div className="conf-fill" style={{width:`${result.confidence}%`, background:info.color}}/>
+                    </div>
+
+                    {/* Multi-class probability breakdown */}
+                    {result.probabilities && (
+                      <div className="prob-container">
+                        <div className="prob-heading">
+                          Class Probability Distribution · {result.model || 'CNN MobileNetV2'}
+                        </div>
+                        {[
+                          { key: 'healthy', label: 'Healthy Canopy', color: 'var(--low)', val: result.probabilities.healthy || 0 },
+                          { key: 'stressed', label: 'Vegetative Stress', color: 'var(--mod)', val: result.probabilities.stressed || 0 },
+                          { key: 'infected', label: 'Sal Borer Infested', color: 'var(--high)', val: result.probabilities.infected || 0 },
+                        ].map(c => (
+                          <div key={c.key} style={{ marginBottom: 8 }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11.5, marginBottom: 3 }}>
+                              <span style={{ color: 'var(--text-secondary)' }}>{c.label}</span>
+                              <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, color: c.color }}>{c.val}%</span>
+                            </div>
+                            <div style={{ height: 6, background: 'var(--bg-card)', borderRadius: 3, overflow: 'hidden' }}>
+                              <div style={{ width: `${Math.min(100, c.val)}%`, height: '100%', background: c.color, borderRadius: 3, transition: 'width 0.6s var(--ease)' }} />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Advice */}
+                    <div className="result-advice" style={{borderLeft:`3px solid ${info.color}`}}>
+                      {info.advice}
+                    </div>
+
+                    {/* Form */}
+                    <div className="result-form">
+                      <div className="form-group">
+                        <label className="form-label">Severity Assessment</label>
+                        <select className="form-select" value={severity} onChange={e=>setSeverity(e.target.value)}>
+                          <option value="low">Low — isolated, no spread</option>
+                          <option value="moderate">Moderate — small cluster</option>
+                          <option value="high">High — wide area affected</option>
+                          <option value="critical">Critical — immediate action</option>
+                        </select>
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label">Field Notes</label>
+                        <textarea className="form-textarea"
+                          rows={3}
+                          placeholder="Bark exit holes, resin extrusion, crown wilting, or adjacent infected trees…"
+                          value={notes} onChange={e=>setNotes(e.target.value)}
+                        />
+                      </div>
+                      <div className="field-action-bar">
+                        <button className="btn btn-ghost btn-action" onClick={reset}>
+                          <RefreshCw size={14}/> Reset
+                        </button>
+                        <button className="btn btn-primary btn-action" onClick={save} disabled={saving}>
+                          {saving
+                            ? <><RefreshCw size={14} style={{animation:'spin 1s linear infinite'}}/> Saving Report…</>
+                            : <><Send size={14}/> {online ? 'Submit Report' : 'Save Offline'}</>
+                          }
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">Field Notes</label>
-                    <textarea className="form-textarea"
-                      placeholder="Exit holes in bark, sawdust at base, adjacent trees affected…"
-                      value={notes} onChange={e=>setNotes(e.target.value)}
-                    />
+                )}
+
+                {/* Empty State before photo */}
+                {!image && !loading && !result && (
+                  <div className="field-idle-card">
+                    <div className="idle-icon-wrap">
+                      <Leaf size={24} style={{color:'var(--accent)'}}/>
+                    </div>
+                    <div style={{fontSize:15, fontWeight:600, color:'var(--text-primary)', marginBottom:6}}>
+                      Awaiting Tree Specimen
+                    </div>
+                    <div style={{fontSize:12.5, color:'var(--text-muted)', lineHeight:1.6, maxWidth:360, margin:'0 auto'}}>
+                      Capture or select a photo on the left. The neural network will immediately analyze bark features and canopy reflectance to detect Sal Heartwood Borer stress.
+                    </div>
                   </div>
-                  <div style={{display:'flex',gap:8}}>
-                    <button className="btn btn-ghost" onClick={reset}>New</button>
-                    <button className="btn btn-primary" style={{flex:1}} onClick={save} disabled={saving}>
-                      {saving
-                        ? <><RefreshCw size={13} style={{animation:'spin 1s linear infinite'}}/> Saving…</>
-                        : <><Send size={13}/>{online?'Submit':'Save Offline'}</>
-                      }
-                    </button>
+                )}
+              </>
+            ) : (
+              <div className="success-state">
+                <CheckCircle size={52} style={{color:'var(--low)', marginBottom:14}}/>
+                <div style={{fontSize:22, fontWeight:700, marginBottom:6, color:'var(--text-primary)'}}>
+                  {online ? 'Report Submitted' : 'Saved for Sync'}
+                </div>
+                <div style={{fontSize:13, color:'var(--text-muted)', marginBottom:12, lineHeight:1.7}}>
+                  {online
+                    ? 'Synced to the SAL-SHIELD central monitoring dashboard successfully.'
+                    : 'Stored securely in your local browser cache. Navigate to Saved tab to sync when connected.'
+                  }
+                </div>
+                {gps.location && (
+                  <div style={{fontSize:12, fontFamily:'var(--font-mono)', color:'var(--accent)', marginBottom:22, background:'var(--bg-elevated)', padding:'6px 14px', borderRadius:20, display:'inline-block'}}>
+                    📍 {gps.location.lat.toFixed(5)}°N, {gps.location.lng.toFixed(5)}°E
                   </div>
+                )}
+                <div>
+                  <button className="btn btn-primary btn-lg" onClick={reset} style={{minWidth:220}}>
+                    <Camera size={16}/> Report Another Tree
+                  </button>
                 </div>
               </div>
             )}
-          </>
-        ) : (
-          <div className="success-state">
-            <CheckCircle size={48} style={{color:'var(--low)',marginBottom:14}}/>
-            <div style={{fontSize:20,fontWeight:700,marginBottom:6}}>
-              {online?'Report Submitted':'Saved for Sync'}
-            </div>
-            <div style={{fontSize:13,color:'var(--text-muted)',marginBottom:8,lineHeight:1.7}}>
-              {online
-                ? 'Sent to the SAL-SHIELD dashboard successfully.'
-                : 'Stored in your browser. Go to the Saved tab to sync when online or export to CSV.'
-              }
-            </div>
-            {gps.location && (
-              <div style={{fontSize:11,fontFamily:'var(--font-mono)',color:'var(--accent)',marginBottom:20}}>
-                📍 {gps.location.lat.toFixed(4)}°N, {gps.location.lng.toFixed(4)}°E
-              </div>
-            )}
-            <button className="btn btn-primary btn-full btn-lg" onClick={reset}>
-              <Camera size={16}/> Report Another Tree
-            </button>
           </div>
-        )}
+        </div>
       </div>
       <style>{`@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}`}</style>
     </div>

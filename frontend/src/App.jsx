@@ -46,7 +46,7 @@ return (
       <header className="topbar">
         <NavLink to="/" className="topbar-logo">
           <img 
-            src="/Sal-Shield-Project-Logo.png" 
+            src="/Sal-Shield-Logo.png" 
             alt="SAL-SHIELD Logo" 
             className="topbar-logo-img"
           />
