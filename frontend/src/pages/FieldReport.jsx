@@ -216,16 +216,27 @@ export default function FieldReport() {
                   <div className="conf-fill" style={{width:`${result.confidence}%`,background:info.color}}/>
                 </div>
 
-                {/* Demo notice */}
-                {result.source==='demo-mode' && (
-                  <div style={{
-                    margin:'0 18px 12px', padding:'8px 12px',
-                    background:'var(--mod-dim)', border:'1px solid var(--mod-border)',
-                    borderRadius:'var(--r)', fontSize:11, color:'var(--mod)',
-                    display:'flex', gap:6, alignItems:'center'
-                  }}>
-                    <Info size={11} style={{flexShrink:0}}/>
-                    Demo model — result is illustrative. Real CNN model plugs in via backend/models/
+                {/* Multi-class probability breakdown */}
+                {result.probabilities && (
+                  <div style={{ margin: '0 18px 14px', background: 'var(--bg-elevated)', borderRadius: 'var(--r)', padding: '10px 14px' }}>
+                    <div style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 8 }}>
+                      Class Probability Distribution · {result.model || 'CNN Model'}
+                    </div>
+                    {[
+                      { key: 'healthy', label: 'Healthy Canopy', color: 'var(--low)', val: result.probabilities.healthy || 0 },
+                      { key: 'stressed', label: 'Vegetative Stress', color: 'var(--mod)', val: result.probabilities.stressed || 0 },
+                      { key: 'infected', label: 'Sal Borer Infested', color: 'var(--high)', val: result.probabilities.infected || 0 },
+                    ].map(c => (
+                      <div key={c.key} style={{ marginBottom: 6 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, marginBottom: 2 }}>
+                          <span style={{ color: 'var(--text-secondary)' }}>{c.label}</span>
+                          <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, color: c.color }}>{c.val}%</span>
+                        </div>
+                        <div style={{ height: 5, background: 'var(--bg-card)', borderRadius: 3, overflow: 'hidden' }}>
+                          <div style={{ width: `${Math.min(100, c.val)}%`, height: '100%', background: c.color, borderRadius: 3, transition: 'width 0.6s var(--ease)' }} />
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )}
 

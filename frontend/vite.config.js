@@ -20,25 +20,19 @@ export default defineConfig({
         start_url: '/',
         icons: [
           { 
-            src: '/Sal-Shield-Logo.png', 
+            src: '/icons/icon-192.png', 
             sizes: '192x192', 
             type: 'image/png',
             purpose: 'any'
           },
           { 
-            src: '/Sal-Shield-Logo.png', 
+            src: '/icons/icon-512.png', 
             sizes: '512x512', 
             type: 'image/png',
             purpose: 'any' 
           },
           { 
-            src: '/Sal-Shield-Logo.png', 
-            sizes: '192x192', 
-            type: 'image/png',
-            purpose: 'maskable'
-          },
-          { 
-            src: '/Sal-Shield-Logo.png', 
+            src: '/Sal-Shield-Project-Logo.png', 
             sizes: '512x512', 
             type: 'image/png',
             purpose: 'maskable'

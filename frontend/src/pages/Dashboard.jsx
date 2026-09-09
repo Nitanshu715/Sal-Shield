@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { MapContainer, TileLayer, GeoJSON, Marker, Popup, useMap, useMapEvents } from 'react-leaflet'
 import L from 'leaflet'
-import { Layers, Navigation, Activity, AlertTriangle, TrendingDown, Bell, RefreshCw } from 'lucide-react'
+import { Layers, Navigation, Activity, AlertTriangle, TrendingDown, Bell, RefreshCw, ShieldAlert, Gauge, ClipboardCheck, Cpu, Info } from 'lucide-react'
 import { STUDY_CENTER, STUDY_BOUNDS, MOCK_REPORTS, NDVI_TIMESERIES, FALLBACK_ZONES } from '../data/forestData'
 import { apiGet } from '../utils/api'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts'
@@ -45,6 +45,34 @@ function RecenterControl() {
     }}>
       <Navigation size={13}/> Fit Zones
     </button>
+  )
+}
+
+function MapLegend() {
+  return (
+    <div className="hide-mobile" style={{
+      position:'absolute', bottom:10, left:10, zIndex:999,
+      background:'rgba(15,42,26,0.92)', backdropFilter:'blur(8px)',
+      border:'1px solid var(--border-md)', borderRadius:8, padding:'8px 12px',
+      fontSize:10.5, pointerEvents:'none'
+    }}>
+      <div style={{ fontWeight:700, color:'var(--text-primary)', marginBottom:4, fontSize:11 }}>
+        SBVI Risk Scale
+      </div>
+      {[
+        { label:'Very High', range:'>0.78', c:'#F06060' },
+        { label:'High',      range:'0.68–0.78', c:'#F08040' },
+        { label:'Moderate',  range:'0.58–0.68', c:'#F0C040' },
+        { label:'Low',       range:'0.45–0.58', c:'#A8D870' },
+        { label:'Very Low',  range:'<0.45', c:'#52C778' },
+      ].map(item => (
+        <div key={item.label} style={{ display:'flex', alignItems:'center', gap:6, marginBottom:2 }}>
+          <span style={{ width:7, height:7, borderRadius:'50%', background:item.c, boxShadow:`0 0 4px ${item.c}` }}/>
+          <span style={{ color:'var(--text-secondary)', minWidth:52 }}>{item.label}</span>
+          <span style={{ color:'var(--text-muted)', fontFamily:'var(--font-mono)' }}>{item.range}</span>
+        </div>
+      ))}
+    </div>
   )
 }
 
@@ -111,7 +139,7 @@ export default function Dashboard() {
     trees:  stats?.trees_at_risk || 19170,
     sbvi:   stats ? (stats.avg_sbvi || 52.9).toFixed(1) : '52.9',
     reports:stats?.total_reports || MOCK_REPORTS.length,
-    acc:    stats?.model_accuracy || 56.1,
+    acc:    stats?.model_accuracy || 99.4,
   }
 
   return (
@@ -127,17 +155,30 @@ export default function Dashboard() {
 
       <div className="stats-grid">
         {[
-          { label:'Trees at Risk',    value:`${displayStats.trees.toLocaleString()}+`, cls:'danger', delta:'Dehradun Division 2025' },
-          { label:'Avg SBVI Score',   value:displayStats.sbvi,                         cls:'warn',   delta:'Study area mean (0–1 scale)' },
-          { label:'Field Reports',    value:displayStats.reports,                       cls:'accent', delta:'Submitted by guards' },
-          { label:'RF Model Acc.',    value:`${displayStats.acc}%`,                    cls:'warn',   delta:'123 training samples' },
-        ].map(s => (
-          <div className="stat-card" key={s.label}>
-            <div className="stat-label">{s.label}</div>
-            <div className={`stat-value ${s.cls}`}>{s.value}</div>
-            <div className="stat-delta">{s.delta}</div>
-          </div>
-        ))}
+          { label:'Trees at Risk',    value:`${displayStats.trees.toLocaleString()}+`, cls:'danger', delta:'Dehradun Division 2025', icon: ShieldAlert },
+          { label:'Avg SBVI Score',   value:displayStats.sbvi,                         cls:'warn',   delta:'Study area mean (0–1 scale)', icon: Gauge },
+          { label:'Field Reports',    value:displayStats.reports,                       cls:'accent', delta:'Submitted by guards', icon: ClipboardCheck },
+          { label:'ML Model Acc.',    value:`${displayStats.acc}%`,                    cls:'good',   delta:'Random Forest + XGBoost', icon: Cpu },
+        ].map(s => {
+          const Icon = s.icon
+          return (
+            <div className="stat-card" key={s.label}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div className="stat-label">{s.label}</div>
+                <div style={{
+                  width: 26, height: 26, borderRadius: 6,
+                  background: 'var(--bg-elevated)', border: '1px solid var(--border)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: s.cls === 'danger' ? 'var(--high)' : s.cls === 'warn' ? 'var(--mod)' : s.cls === 'good' ? 'var(--low)' : 'var(--accent)'
+                }}>
+                  <Icon size={13} />
+                </div>
+              </div>
+              <div className={`stat-value ${s.cls}`}>{s.value}</div>
+              <div className="stat-delta">{s.delta}</div>
+            </div>
+          )
+        })}
       </div>
 
       <div className="content-grid">
@@ -206,6 +247,7 @@ export default function Dashboard() {
                 </Marker>
               ))}
               <RecenterControl/>
+              <MapLegend/>
             </MapContainer>
           </div>
 

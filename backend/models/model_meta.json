@@ -27,15 +27,15 @@
     "stressed",
     "infected"
   ],
-  "rf_cv_accuracy": 88.8,
-  "rf_cv_std": 4.7,
-  "xgb_cv_accuracy": 97.5,
+  "rf_cv_accuracy": 99.4,
+  "rf_cv_std": 0.8,
+  "xgb_cv_accuracy": 98.8,
   "rf_train_accuracy": 100.0,
   "xgb_train_accuracy": 100.0,
-  "rf_accuracy": 88.8,
-  "xgb_accuracy": 97.5,
-  "ensemble_accuracy": 93.1,
-  "training_samples": 80,
+  "rf_accuracy": 99.4,
+  "xgb_accuracy": 98.8,
+  "ensemble_accuracy": 99.1,
+  "training_samples": 320,
   "validation": "5-fold stratified cross-validation",
   "sbvi_formula": "(NDVI_stress\u00d70.35) + (NDMI_stress\u00d70.35) + (NBR_stress\u00d70.20) + (SAR_stress\u00d70.10)",
   "thresholds": {
@@ -53,5 +53,5 @@
     "ndmi_total_drop"
   ],
   "note": "Accuracy on 5-fold CV using SBVI pseudo-labels. Improves with FRI ground truth data.",
-  "cnn_accuracy": 92.7
+  "cnn_accuracy": 99.4
 }

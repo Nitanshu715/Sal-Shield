@@ -44,23 +44,18 @@ return (
     <div className="app">
       {/* Topbar */}
       <header className="topbar">
-        <NavLink to="/" className="topbar-logo" style={{ gap: '14px', display: 'flex', alignItems: 'center', padding: '6px 0 0 10px' }}> {/* Modified padding to add top and left alignment room */}
+        <NavLink to="/" className="topbar-logo">
           <img 
-            src="/Sal-Shield-Logo.png" 
+            src="/Sal-Shield-Project-Logo.png" 
             alt="SAL-SHIELD Logo" 
-            style={{ 
-              objectFit: 'contain', 
-              width: '56px',      /* Commanding commanding profile */
-              height: '56px',     
-              background: 'none', 
-              border: 'none',
-              padding: '0',
-              marginTop: '4px'   /* Adds top margin to push the logo down slightly */
-            }} 
+            className="topbar-logo-img"
           />
           <span className="topbar-logo-text">SAL-<span>SHIELD</span></span>
         </NavLink>
         <div className="topbar-right">
+          <div className="topbar-badge hide-mobile" style={{ color: 'var(--accent)', borderColor: 'var(--border-md)' }}>
+            🛰️ Sentinel-2 Live
+          </div>
           {pendingCount > 0 && (
             <div className="topbar-badge" style={{ color: 'var(--mod)', borderColor: 'var(--mod-border)' }}>
               <Clock size={11} /> {pendingCount} pending
@@ -68,10 +63,7 @@ return (
           )}
           <div className="topbar-badge">
             <span className={`pulse${online ? '' : ' offline'}`} />
-            {online ? 'Live' : 'Offline'}
-          </div>
-          <div className="topbar-badge" style={{ display: 'none' }} id="zone-badge">
-            Dehradun FD
+            {online ? 'Online' : 'Offline'}
           </div>
         </div>
       </header>

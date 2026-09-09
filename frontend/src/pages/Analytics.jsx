@@ -45,14 +45,14 @@ const SEASONAL = [
 
 export default function Analytics() {
   return (
-    <>
+    <div className="page-enter">
       <div className="page-header">
         <div className="page-eyebrow">Temporal Analysis</div>
         <h1 className="page-title">Forest Health Analytics</h1>
-        <p className="page-subtitle">Satellite-derived indices and infestation trends · 2023–2025</p>
+        <p className="page-sub">Satellite-derived indices and infestation trends · 2023–2025</p>
       </div>
 
-      <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <div style={{ padding: '16px 20px 28px', display: 'flex', flexDirection: 'column', gap: 16 }}>
 
         {/* NDVI + NDMI time series */}
         <div className="card">
@@ -62,7 +62,7 @@ export default function Analytics() {
           </div>
           <div className="chart-container">
             <ResponsiveContainer width="100%" height={260}>
-              <AreaChart data={NDVI_TIMESERIES} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+              <AreaChart data={NDVI_TIMESERIES} margin={{ top: 10, right: 15, left: -15, bottom: 0 }}>
                 <defs>
                   <linearGradient id="ndviGrad" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#97BC62" stopOpacity={0.3} />
@@ -84,9 +84,9 @@ export default function Analytics() {
               </AreaChart>
             </ResponsiveContainer>
             <div style={{
-              marginTop: 8, padding: '8px 12px', background: 'var(--risk-high-bg)',
-              borderRadius: 8, fontSize: 11, color: 'var(--risk-high)',
-              borderLeft: '3px solid var(--risk-high)'
+              marginTop: 10, padding: '10px 14px', background: 'var(--risk-high-bg)',
+              borderRadius: 8, fontSize: 11.5, color: 'var(--risk-high)',
+              borderLeft: '3px solid var(--risk-high)', lineHeight: 1.6
             }}>
               Critical decline detected from Aug 2024 — NDVI dropped from 0.69 to 0.24, well below the 0.30 healthy threshold.
               This pattern confirms active infestation expanding since peak monsoon 2024.
@@ -101,10 +101,10 @@ export default function Analytics() {
             <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>66+ = High Risk · 33–65 = Moderate · 0–32 = Low</div>
           </div>
           <div className="chart-container">
-            <ResponsiveContainer width="100%" height={220}>
-              <BarChart data={RISK_DIST} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+            <ResponsiveContainer width="100%" height={230}>
+              <BarChart data={RISK_DIST} margin={{ top: 10, right: 15, left: -15, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                <XAxis dataKey="zone" tick={{ fontSize: 11 }} />
+                <XAxis dataKey="zone" tick={{ fontSize: 10 }} />
                 <YAxis tick={{ fontSize: 10 }} domain={[0, 100]} />
                 <Tooltip content={<CustomTooltip />} />
                 <ReferenceLine y={66} stroke="#E05252" strokeDasharray="4 4" />
@@ -127,7 +127,7 @@ export default function Analytics() {
           </div>
           <div className="chart-container">
             <ResponsiveContainer width="100%" height={260}>
-              <LineChart data={SEASONAL} margin={{ top: 10, right: 30, left: -10, bottom: 0 }}>
+              <LineChart data={SEASONAL} margin={{ top: 10, right: 20, left: -15, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                 <XAxis dataKey="season" tick={{ fontSize: 9 }} angle={-25} textAnchor="end" height={50} />
                 <YAxis yAxisId="left" tick={{ fontSize: 10 }} domain={[0, 1]} />
@@ -142,20 +142,20 @@ export default function Analytics() {
         </div>
 
         {/* Key stats row */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 12 }}>
           {[
             { label: 'NDVI Change', value: '−65%', sub: 'Oct 2023 → Jun 2025', color: 'var(--risk-high)' },
             { label: 'NDMI Drop', value: '−0.39', sub: 'Baseline to current', color: 'var(--risk-high)' },
             { label: 'NBR Decrease', value: '−0.31', sub: 'Forest burn ratio change', color: 'var(--risk-moderate)' },
           ].map(s => (
-            <div key={s.label} className="card" style={{ padding: 16 }}>
+            <div key={s.label} className="card" style={{ padding: '14px 16px' }}>
               <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 6 }}>{s.label}</div>
-              <div style={{ fontSize: 28, fontWeight: 700, color: s.color, fontFamily: 'var(--font-display)' }}>{s.value}</div>
+              <div style={{ fontSize: 26, fontWeight: 700, color: s.color, fontFamily: 'var(--font-mono)', lineHeight: 1 }}>{s.value}</div>
               <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>{s.sub}</div>
             </div>
           ))}
         </div>
       </div>
-    </>
+    </div>
   )
 }

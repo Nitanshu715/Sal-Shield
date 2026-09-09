@@ -9,40 +9,40 @@ export default function Reports() {
   const filtered = filter === 'all' ? reports : reports.filter(r => r.status === filter)
 
   const statusStyle = {
-    infected: { color: 'var(--risk-high)', bg: 'var(--risk-high-bg)', border: 'rgba(224,82,82,0.3)' },
-    stressed: { color: 'var(--risk-moderate)', bg: 'var(--risk-moderate-bg)', border: 'rgba(232,184,75,0.3)' },
-    healthy: { color: 'var(--risk-low)', bg: 'var(--risk-low-bg)', border: 'rgba(76,175,80,0.3)' },
+    infected: { color: 'var(--risk-high)', bg: 'var(--risk-high-bg)', border: 'rgba(240,96,96,0.3)' },
+    stressed: { color: 'var(--risk-moderate)', bg: 'var(--risk-moderate-bg)', border: 'rgba(240,192,64,0.3)' },
+    healthy: { color: 'var(--risk-low)', bg: 'var(--risk-low-bg)', border: 'rgba(82,199,120,0.3)' },
   }
 
   return (
-    <>
+    <div className="page-enter">
       <div className="page-header">
         <div className="page-eyebrow">Field Intelligence</div>
         <h1 className="page-title">Field Reports</h1>
-        <p className="page-subtitle">Submitted by forest guards — AI-classified tree assessments</p>
+        <p className="page-sub">Submitted by forest guards — AI-classified tree assessments</p>
       </div>
 
-      <div style={{ padding: '20px 24px' }}>
+      <div style={{ padding: '16px 20px 24px' }}>
         {/* Summary cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 20 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(105px, 1fr))', gap: 12, marginBottom: 20 }}>
           {[
             { label: 'Infected', count: reports.filter(r => r.status === 'infected').length, color: 'var(--risk-high)' },
             { label: 'Stressed', count: reports.filter(r => r.status === 'stressed').length, color: 'var(--risk-moderate)' },
             { label: 'Healthy', count: reports.filter(r => r.status === 'healthy').length, color: 'var(--risk-low)' },
           ].map(s => (
-            <div key={s.label} className="card" style={{ padding: 16, cursor: 'pointer', borderColor: filter === s.label.toLowerCase() ? s.color : undefined }}
+            <div key={s.label} className="card" style={{ padding: '14px 16px', cursor: 'pointer', borderColor: filter === s.label.toLowerCase() ? s.color : undefined }}
               onClick={() => setFilter(f => f === s.label.toLowerCase() ? 'all' : s.label.toLowerCase())}
             >
-              <div style={{ fontSize: 28, fontWeight: 700, color: s.color, fontFamily: 'var(--font-display)' }}>{s.count}</div>
-              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{s.label}</div>
+              <div style={{ fontSize: 26, fontWeight: 700, color: s.color, fontFamily: 'var(--font-mono)', lineHeight: 1 }}>{s.count}</div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>{s.label}</div>
             </div>
           ))}
         </div>
 
         <div className="card">
-          <div className="card-header">
-            <div className="card-title"><List size={15} /> All Reports</div>
-            <div style={{ display: 'flex', gap: 6 }}>
+          <div className="card-header" style={{ flexWrap: 'wrap', gap: 10 }}>
+            <div className="card-title"><List size={15} /> All Reports ({filtered.length})</div>
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
               {['all', 'infected', 'stressed', 'healthy'].map(f => (
                 <button
                   key={f}
@@ -55,8 +55,8 @@ export default function Reports() {
             </div>
           </div>
 
-          {/* Desktop table */}
-          <div style={{ overflowX: 'auto', display: 'block' }} className="hide-mobile">
+          {/* Desktop/Laptop table */}
+          <div className="table-container hide-mobile">
             <table className="reports-table">
               <thead>
                 <tr>
@@ -74,7 +74,7 @@ export default function Reports() {
                   const st = statusStyle[r.status]
                   return (
                     <tr key={r.id}>
-                      <td style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>{r.id}</td>
+                      <td style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-primary)', fontWeight: 600 }}>{r.id}</td>
                       <td style={{ color: 'var(--text-primary)' }}>{r.zone}</td>
                       <td>
                         <span style={{
@@ -89,7 +89,7 @@ export default function Reports() {
                           <div style={{ flex: 1, height: 5, background: 'var(--bg-elevated)', borderRadius: 3, overflow: 'hidden', minWidth: 60 }}>
                             <div style={{ width: `${r.confidence}%`, height: '100%', background: st.color, borderRadius: 3 }} />
                           </div>
-                          <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: st.color }}>{r.confidence}%</span>
+                          <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: st.color, fontWeight: 600 }}>{r.confidence}%</span>
                         </div>
                       </td>
                       <td>{r.guard}</td>
@@ -107,8 +107,8 @@ export default function Reports() {
             </table>
           </div>
 
-          {/* Mobile cards */}
-          <div style={{ padding: '8px 16px' }}>
+          {/* Mobile cards view */}
+          <div className="hide-desktop" style={{ padding: '8px 16px 14px' }}>
             {filtered.map(r => {
               const st = statusStyle[r.status]
               return (
@@ -142,6 +142,6 @@ export default function Reports() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }

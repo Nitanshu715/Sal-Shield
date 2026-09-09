@@ -41,6 +41,19 @@
   --high-dim:   rgba(240,96,96,0.10);
   --high-border:rgba(240,96,96,0.25);
 
+  /* Risk aliases & Theme extensions */
+  --risk-high:            var(--high);
+  --risk-high-bg:         var(--high-dim);
+  --risk-high-border:     var(--high-border);
+  --risk-moderate:        var(--mod);
+  --risk-moderate-bg:     var(--mod-dim);
+  --risk-moderate-border: var(--mod-border);
+  --risk-low:             var(--low);
+  --risk-low-bg:          var(--low-dim);
+  --risk-low-border:      var(--low-border);
+  --border-light:         var(--border-md);
+  --font-display:         var(--font);
+
   /* Typography */
   --font:      'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
@@ -96,7 +109,7 @@ html, body, #root {
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
-  height: 52px;
+  height: 56px;
   background: var(--bg-surface);
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
@@ -104,10 +117,24 @@ html, body, #root {
   backdrop-filter: blur(12px);
 }
 
-.topbar-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.topbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.topbar-logo-img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
+}
 
 .topbar-logo-shield {
-  width: 30px; height: 30px;
+  width: 32px; height: 32px;
   background: linear-gradient(135deg, var(--accent), var(--accent-light));
   border-radius: 8px;
   display: flex; align-items: center; justify-content: center;
@@ -117,8 +144,9 @@ html, body, #root {
 }
 
 .topbar-logo-text {
-  font-size: 15px; font-weight: 700; letter-spacing: 0.5px;
+  font-size: 16px; font-weight: 700; letter-spacing: 0.5px;
   color: var(--text-primary);
+  display: flex; align-items: center;
 }
 .topbar-logo-text span { color: var(--accent); }
 
@@ -673,12 +701,16 @@ html, body, #root {
 .recharts-cartesian-grid-vertical line { stroke: var(--border) !important; }
 .recharts-text { fill: var(--text-muted) !important; font-size: 11px; font-family: var(--font) !important; }
 
-/* ─── ANALYTICS ──────────────────────────────────────────────────────────── */
-.chart-wrap { padding: 16px 18px 20px; }
+/* ─── ANALYTICS & CHARTS ─────────────────────────────────────────────────── */
+.chart-wrap, .chart-container {
+  padding: 16px 18px 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
 
 /* ─── SUCCESS STATE ──────────────────────────────────────────────────────── */
 .success-state {
-  text-align: center; padding: 44px 24px;
+  text-align: center; padding: 36px 20px;
   background: var(--bg-card); border-radius: var(--r-xl);
   border: 1px solid var(--border);
   animation: slideUp var(--t-slow) var(--spring) both;
@@ -716,37 +748,127 @@ html, body, #root {
   font-size: 11px; font-weight: 700; color: var(--accent);
 }
 
-/* ─── RESPONSIVE ─────────────────────────────────────────────────────────── */
+/* ─── REPORTS TABLE & CARDS ──────────────────────────────────────────────── */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 0 0 var(--r-lg) var(--r-lg);
+  -webkit-overflow-scrolling: touch;
+}
+
+.reports-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: left;
+  font-size: 13px;
+}
+.reports-table th {
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border-md);
+  white-space: nowrap;
+}
+.reports-table td {
+  padding: 13px 18px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.reports-table tr:hover td {
+  background: var(--accent-dim);
+  color: var(--text-primary);
+}
+.reports-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Filter pills / buttons */
+.layer-btn {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border-md);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all var(--t) var(--ease);
+}
+.layer-btn:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+.layer-btn.active-high {
+  background: var(--high-dim);
+  color: var(--high);
+  border-color: var(--high-border);
+}
+.layer-btn.active-moderate {
+  background: var(--mod-dim);
+  color: var(--mod);
+  border-color: var(--mod-border);
+}
+.layer-btn.active-low {
+  background: var(--low-dim);
+  color: var(--low);
+  border-color: var(--low-border);
+}
+.layer-btn.active-reports {
+  background: var(--accent-dim);
+  color: var(--accent-light);
+  border-color: var(--border-hi);
+}
+
+/* Responsive Visibility Helpers */
+.hide-mobile {
+  display: block;
+}
+.hide-desktop {
+  display: none !important;
+}
+
+/* ─── RESPONSIVE SYSTEM ─────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+    padding: 0 18px 24px;
+  }
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 16px 18px;
+    gap: 12px;
+  }
+}
+
 @media (max-width: 768px) {
   .sidebar { display: none !important; }
   .bottom-nav { display: flex; }
-  .main-content { padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px)); }
-  .stats-grid { grid-template-columns: 1fr 1fr; padding: 12px 14px; gap: 10px; }
-  .content-grid { grid-template-columns: 1fr; padding: 0 14px 80px; }
-  .page-header { padding: 16px 14px 0; }
-  .map-wrap { height: 280px; }
-  .page-title { font-size: 18px; }
+  .main-content {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  }
+  .page-header { padding: 16px 16px 0; }
+  .page-title { font-size: 20px; }
+  .topbar { padding: 0 14px; height: 52px; }
+  .topbar-logo-img { width: 32px; height: 32px; }
+  .topbar-logo-text { font-size: 15px; }
   .topbar-badge { display: none; }
-}
-@media (min-width: 769px) {
-  .field-page { max-width: 560px; margin: 0 auto; }
-}
-@media (max-width: 480px) {
-  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .stats-grid { grid-template-columns: 1fr 1fr; padding: 12px 14px; gap: 10px; }
   .stat-value { font-size: 22px; }
+  .content-grid { grid-template-columns: 1fr; padding: 0 14px 24px; gap: 14px; }
+  .map-wrap { height: 300px; }
+  
+  .hide-mobile { display: none !important; }
+  .hide-desktop { display: block !important; }
 }
 
-/* ─── MOBILE PWA LOGO REALIGNMENT & RESIZING ──────────────────────────────── */
-@media (max-width: 768px) {
-  .topbar-logo {
-    padding: 6px 0 0 8px !important; /* Spaces out the logo bounding box container on phone screens */
-    gap: 12px !important;            /* Adds uniform layout room between the larger shield asset and text */
-  }
-
-  .topbar-logo img {
-    margin-top: 5px !important;      /* Pushes the larger image down to perfectly match mobile line-height baselines */
-    width: 52px !important;          /* Scales up the image scale from 48px to a crisp 52px */
-    height: 52px !important;         /* Scales up the image scale from 48px to a crisp 52px */
-    object-fit: contain !important;
-  }
+@media (min-width: 769px) {
+  .field-page { max-width: 640px; margin: 0 auto; }
 }
