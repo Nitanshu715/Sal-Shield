@@ -36,37 +36,100 @@ export async function mockPredictImage(file) {
       img.onload = () => {
         try {
           const canvas = document.createElement('canvas')
-          canvas.width = 64
-          canvas.height = 64
+          const S = 128
+          canvas.width = S
+          canvas.height = S
           const ctx = canvas.getContext('2d')
           if (ctx) {
-            ctx.drawImage(img, 0, 0, 64, 64)
-            const data = ctx.getImageData(0, 0, 64, 64).data
-            let rTotal = 0, gTotal = 0, bTotal = 0
-            for (let i = 0; i < data.length; i += 4) {
-              rTotal += data[i]
-              gTotal += data[i + 1]
-              bTotal += data[i + 2]
-            }
-            const pixels = data.length / 4
-            const rMean = rTotal / pixels / 255
-            const gMean = gTotal / pixels / 255
-            const bMean = bTotal / pixels / 255
+            ctx.drawImage(img, 0, 0, S, S)
+            const imgData = ctx.getImageData(0, 0, S, S).data
+            const totalPixels = S * S
 
-            const egi = 2 * gMean - rMean - bMean
-            const yellow = (rMean + gMean) / 2 - bMean
+            let whitePaperPixels = 0
+            let healthyGreenPixels = 0
+            let yellowStressPixels = 0
+            let barkBrownPixels = 0
+            let boreHolePixels = 0
+            let frassDustPixels = 0
+
+            let rSum = 0, gSum = 0, bSum = 0
+
+            for (let i = 0; i < imgData.length; i += 4) {
+              const r = imgData[i] / 255
+              const g = imgData[i + 1] / 255
+              const b = imgData[i + 2] / 255
+
+              rSum += r; gSum += g; bSum += b
+
+              // 1. Check for paper / document / screenshot / certificate (high uniform brightness)
+              if (r > 0.78 && g > 0.78 && b > 0.78) {
+                whitePaperPixels++
+              }
+
+              // 2. Healthy green canopy
+              if (g > r * 1.08 && g > b * 1.08 && g > 0.22) {
+                healthyGreenPixels++
+              }
+
+              // 3. Chlorotic stress (yellow/orange foliage)
+              if (r > 0.44 && g > 0.40 && b < 0.35 && Math.abs(r - g) < 0.20) {
+                yellowStressPixels++
+              }
+
+              // 4. Tree trunk bark (Sal mature bark)
+              if (r > 0.24 && g > 0.16 && b > 0.08 && r > g && g > b) {
+                barkBrownPixels++
+              }
+
+              // 5. Sal Heartwood Borer bore holes (dark elliptical cavities)
+              if (r < 0.18 && g < 0.18 && b < 0.18) {
+                boreHolePixels++
+              }
+
+              // 6. Larval frass (sawdust ejected around holes)
+              if (r > 0.55 && g > 0.40 && b < 0.30 && r > g * 1.15) {
+                frassDustPixels++
+              }
+            }
+
+            const paperRatio = whitePaperPixels / totalPixels
+            const greenRatio = healthyGreenPixels / totalPixels
+            const yellowRatio = yellowStressPixels / totalPixels
+            const barkRatio = barkBrownPixels / totalPixels
+            const holeRatio = boreHolePixels / totalPixels
+            const frassRatio = frassDustPixels / totalPixels
+
+            // If user uploaded a document, certificate, receipt, or plain white image:
+            if (paperRatio > 0.35) {
+              resolve({
+                label: 'non_foliage',
+                confidence: Math.round(paperRatio * 100),
+                probabilities: { healthy: 0, stressed: 0, infected: 0 },
+                source: 'edge-botanical-verifier',
+                model: 'sal-shield-verifier-v3'
+              })
+              return
+            }
+
+            // Sal Heartwood Borer infection metric:
+            const infectedScore = barkRatio * 0.40 + holeRatio * 0.35 + frassRatio * 0.25
 
             let label = 'healthy'
-            let conf = 89.2
-            if (egi > 0.08 && gMean > rMean) {
-              label = 'healthy'
-              conf = Math.min(96.5, Math.max(82.0, Math.round(78 + egi * 50)))
-            } else if (yellow > 0.15 || (rMean > 0.45 && gMean > 0.38)) {
-              label = 'stressed'
-              conf = Math.min(94.0, Math.max(80.0, Math.round(75 + yellow * 45)))
-            } else {
+            let conf = 88.0
+
+            if (infectedScore > 0.26 || (holeRatio > 0.08 && barkRatio > 0.18) || frassRatio > 0.16) {
               label = 'infected'
-              conf = Math.min(95.0, Math.max(81.0, Math.round(80 + (1 - gMean) * 20)))
+              conf = Math.min(96.0, Math.max(84.0, Math.round(78 + infectedScore * 40)))
+            } else if (yellowRatio > 0.20 || (yellowRatio > greenRatio && yellowRatio > 0.10)) {
+              label = 'stressed'
+              conf = Math.min(95.0, Math.max(82.0, Math.round(75 + yellowRatio * 40)))
+            } else if (greenRatio > 0.18 && (gSum > rSum)) {
+              label = 'healthy'
+              conf = Math.min(97.0, Math.max(85.0, Math.round(78 + greenRatio * 35)))
+            } else {
+              // Default to infected or stressed if bark features dominate
+              label = infectedScore > 0.15 ? 'infected' : 'stressed'
+              conf = 84.0
             }
 
             const rem = Math.max(0, 100 - conf)
@@ -82,15 +145,15 @@ export async function mockPredictImage(file) {
                 infected: label === 'infected' ? conf : (label === 'healthy' ? p2 : p1),
               },
               source: 'client-cv-offline',
-              model: 'sal-shield-edge-cv'
+              model: 'sal-shield-edge-cv-v3'
             })
             return
           }
         } catch {}
         resolve({
-          label: 'healthy',
-          confidence: 88.0,
-          probabilities: { healthy: 88, stressed: 8, infected: 4 },
+          label: 'stressed',
+          confidence: 82.0,
+          probabilities: { healthy: 10, stressed: 82, infected: 8 },
           source: 'offline-baseline'
         })
       }
@@ -98,9 +161,9 @@ export async function mockPredictImage(file) {
     }
     reader.onerror = () => {
       resolve({
-        label: 'healthy',
-        confidence: 85.0,
-        probabilities: { healthy: 85, stressed: 10, infected: 5 },
+        label: 'stressed',
+        confidence: 80.0,
+        probabilities: { healthy: 10, stressed: 80, infected: 10 },
         source: 'offline-fallback'
       })
     }

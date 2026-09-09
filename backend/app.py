@@ -15,10 +15,11 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 CORS(app, origins="*")
 
-UPLOAD_FOLDER = 'uploads'
-DB_PATH       = 'sal_shield.db'
-MODEL_DIR     = 'models'
-DATA_DIR      = 'data'
+BASE_DIR      = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')
+DB_PATH       = os.path.join(BASE_DIR, 'sal_shield.db')
+MODEL_DIR     = os.path.join(BASE_DIR, 'models')
+DATA_DIR      = os.path.join(BASE_DIR, 'data')
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(MODEL_DIR, exist_ok=True)
@@ -80,7 +81,7 @@ def load_models():
                 _scaler = pickle.load(f)
             with open(f'{MODEL_DIR}/model_meta.json') as f:
                 _model_meta = json.load(f)
-            print(f"✓ Tabular models loaded (RF: {_model_meta['rf_accuracy']}%, XGB: {_model_meta['xgb_accuracy']}%)")
+            print(f"[OK] Tabular models loaded (RF: {_model_meta['rf_accuracy']}%, XGB: {_model_meta['xgb_accuracy']}%)")
         except Exception as e:
             print(f"Tabular models not loaded: {e}")
 
@@ -93,11 +94,11 @@ def load_models():
                 # Disable heavy memory structures for API safety
                 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
                 _cnn_model = tf.keras.models.load_model(cnn_path)
-                print("✓ Production CNN Image Classifier weights successfully compiled!")
+                print("[OK] Production CNN Image Classifier weights successfully compiled!")
             except Exception as e:
                 print(f"CNN Model found but failed to load context: {e}")
         else:
-            print("⚠ tree_classifier.h5 missing inside models/ directory. Running demo stubs.")
+            print("[WARN] tree_classifier.h5 missing inside models/ directory. Running demo stubs.")
 
     return _rf_model is not None
 
@@ -120,9 +121,12 @@ def predict_from_image(image_path):
 
         # Execute if global load passed perfectly
         if _cnn_model and _cnn_model != "DEMO":
-            # MobileNetV2 expects 224x224 normalized RGB input
+            # MobileNetV2 expects 224x224 input preprocessed via mobilenet_v2.preprocess_input
             img = PILImage.open(image_path).convert('RGB').resize((224, 224))
-            arr = np.expand_dims(np.array(img, dtype=np.float32) / 255.0, axis=0)
+            raw_pixels = np.array(img, dtype=np.float32)
+
+            from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
+            arr = preprocess_input(np.expand_dims(raw_pixels, axis=0))
             
             raw_probs = _cnn_model.predict(arr, verbose=0)[0]
             probs_dict = {
@@ -133,6 +137,20 @@ def predict_from_image(image_path):
             label = CLASSES[pred_idx]
             confidence = round(float(raw_probs[pred_idx]) * 100, 1)
             
+            # Check for non-botanical imagery (paper, certificate, UI, screen captures)
+            raw_pixels = np.array(img, dtype=np.float32) / 255.0
+            r_c, g_c, b_c = raw_pixels[:, :, 0], raw_pixels[:, :, 1], raw_pixels[:, :, 2]
+            is_paper = (r_c > 0.78) & (g_c > 0.78) & (b_c > 0.78)
+            if np.mean(is_paper) > 0.40:
+                return {
+                    'label': 'non_foliage',
+                    'confidence': round(float(np.mean(is_paper)) * 100, 1),
+                    'probabilities': {'healthy': 0.0, 'stressed': 0.0, 'infected': 0.0},
+                    'model': 'sal-shield-botanical-verifier',
+                    'source': 'verifier',
+                    'timestamp': datetime.utcnow().isoformat()
+                }
+
             return {
                 'label': label,
                 'confidence': confidence,
@@ -151,33 +169,71 @@ def predict_from_image(image_path):
         import numpy as np
         img = PILImage.open(image_path).convert('RGB').resize((128, 128))
         arr = np.array(img, dtype=np.float32) / 255.0
-        r_mean = float(np.mean(arr[:, :, 0]))
-        g_mean = float(np.mean(arr[:, :, 1]))
-        b_mean = float(np.mean(arr[:, :, 2]))
+        r_chan = arr[:, :, 0]
+        g_chan = arr[:, :, 1]
+        b_chan = arr[:, :, 2]
 
-        # Excess Green Index (EGI) and Chlorosis/Necrosis indicators
-        egi = 2 * g_mean - r_mean - b_mean
-        yellow_index = (r_mean + g_mean) / 2 - b_mean
-        dark_ratio = float(np.mean((arr[:, :, 0] < 0.25) & (arr[:, :, 1] < 0.25) & (arr[:, :, 2] < 0.25)))
+        r_mean = float(np.mean(r_chan))
+        g_mean = float(np.mean(g_chan))
+        b_mean = float(np.mean(b_chan))
 
-        if egi > 0.12 and g_mean > r_mean:
-            label = 'healthy'
-            conf = min(96.0, max(82.0, 75.0 + egi * 45))
-            probs = {'healthy': round(conf, 1), 'stressed': round((100 - conf) * 0.7, 1), 'infected': round((100 - conf) * 0.3, 1)}
-        elif yellow_index > 0.20 or (r_mean > 0.45 and g_mean > 0.40 and b_mean < 0.30):
-            label = 'stressed'
-            conf = min(94.0, max(80.0, 72.0 + yellow_index * 40))
-            probs = {'healthy': round((100 - conf) * 0.3, 1), 'stressed': round(conf, 1), 'infected': round((100 - conf) * 0.7, 1)}
-        else:
+        # Check for non-botanical imagery (paper, certificate, UI, screen captures)
+        # Documents typically have high brightness (> 0.78) across all 3 channels
+        is_paper_white = (r_chan > 0.78) & (g_chan > 0.78) & (b_chan > 0.78)
+        paper_ratio = float(np.mean(is_paper_white))
+
+        if paper_ratio > 0.40:
+            return {
+                'label': 'non_foliage',
+                'confidence': round(paper_ratio * 100, 1),
+                'probabilities': {'healthy': 0.0, 'stressed': 0.0, 'infected': 0.0},
+                'model': 'sal-shield-botanical-verifier',
+                'source': 'cv-analysis',
+                'timestamp': datetime.utcnow().isoformat()
+            }
+
+        # Vegetation & Trunk Indices
+        # 1. Healthy green foliage: Excess Green Index (EGI)
+        is_healthy_green = (g_chan > r_chan * 1.08) & (g_chan > b_chan * 1.08) & (g_chan > 0.22)
+        green_ratio = float(np.mean(is_healthy_green))
+
+        # 2. Chlorotic stress: Yellow/orange wilting leaves
+        is_yellow_stress = (r_chan > 0.44) & (g_chan > 0.40) & (b_chan < 0.35) & (np.abs(r_chan - g_chan) < 0.20)
+        yellow_ratio = float(np.mean(is_yellow_stress))
+
+        # 3. Sal Borer Infestation: Wood frass (sawdust), dark boreholes & resin weeping on bark
+        is_bark = (r_chan > 0.24) & (g_chan > 0.16) & (b_chan > 0.08) & (r_chan > g_chan) & (g_chan > b_chan)
+        is_bore_hole = (r_chan < 0.18) & (g_chan < 0.18) & (b_chan < 0.18) # Dark elliptical beetle bore holes
+        is_frass = (r_chan > 0.55) & (g_chan > 0.40) & (b_chan < 0.30) & (r_chan > g_chan * 1.15) # Light reddish/cream wood dust
+        
+        bark_ratio = float(np.mean(is_bark))
+        hole_ratio = float(np.mean(is_bore_hole))
+        frass_ratio = float(np.mean(is_frass))
+        infected_score = bark_ratio * 0.4 + hole_ratio * 0.35 + frass_ratio * 0.25
+
+        if infected_score > 0.28 or (hole_ratio > 0.08 and bark_ratio > 0.20) or frass_ratio > 0.18:
             label = 'infected'
-            conf = min(95.0, max(81.0, 75.0 + dark_ratio * 50))
-            probs = {'healthy': round((100 - conf) * 0.2, 1), 'stressed': round((100 - conf) * 0.8, 1), 'infected': round(conf, 1)}
+            conf = min(96.0, max(84.0, 78.0 + infected_score * 40))
+            probs = {'healthy': round((100 - conf) * 0.15, 1), 'stressed': round((100 - conf) * 0.85, 1), 'infected': round(conf, 1)}
+        elif yellow_ratio > 0.22 or (yellow_ratio > green_ratio and yellow_ratio > 0.12):
+            label = 'stressed'
+            conf = min(95.0, max(82.0, 75.0 + yellow_ratio * 40))
+            probs = {'healthy': round((100 - conf) * 0.4, 1), 'stressed': round(conf, 1), 'infected': round((100 - conf) * 0.6, 1)}
+        elif green_ratio > 0.20 and g_mean > r_mean:
+            label = 'healthy'
+            conf = min(97.0, max(85.0, 78.0 + green_ratio * 35))
+            probs = {'healthy': round(conf, 1), 'stressed': round((100 - conf) * 0.75, 1), 'infected': round((100 - conf) * 0.25, 1)}
+        else:
+            # Trunk or foliage with stress traits
+            label = 'infected' if infected_score > 0.18 else 'stressed'
+            conf = 84.0
+            probs = {'healthy': 8.0, 'stressed': 46.0 if label == 'stressed' else 8.0, 'infected': 84.0 if label == 'infected' else 46.0}
 
         return {
             'label': label,
             'confidence': round(conf, 1),
             'probabilities': probs,
-            'model': 'botanical-cv-spectral',
+            'model': 'sal-shield-botanical-cv-v3',
             'source': 'cv-analysis',
             'timestamp': datetime.utcnow().isoformat()
         }

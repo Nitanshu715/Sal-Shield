@@ -53,5 +53,5 @@
     "ndmi_total_drop"
   ],
   "note": "Accuracy on 5-fold CV using SBVI pseudo-labels. Improves with FRI ground truth data.",
-  "cnn_accuracy": 99.4
+  "cnn_accuracy": 96.7
 }

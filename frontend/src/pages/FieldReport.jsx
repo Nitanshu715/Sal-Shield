@@ -5,9 +5,10 @@ import { useToast } from '../hooks/useToast'
 import { apiPost, mockPredictImage, saveOfflineReport } from '../utils/api'
 
 const CLASS = {
-  healthy:  { emoji:'🌿', label:'Healthy',  color:'var(--low)',  advice:'Tree appears healthy. No immediate action. Continue periodic monitoring.' },
-  stressed: { emoji:'⚠️', label:'Stressed', color:'var(--mod)',  advice:'Early stress detected. Inspect for bark entry holes within 2 weeks. Adjacent trees may show similar signs.' },
-  infected: { emoji:'🚨', label:'Infected', color:'var(--high)', advice:'High probability of active Sal borer infestation. Flag for FRI assessment immediately. Check 20m radius for spread.' },
+  healthy:     { emoji:'🌿', label:'Healthy',     color:'var(--low)',  advice:'Tree appears healthy. No immediate action needed. Continue periodic seasonal monitoring.' },
+  stressed:    { emoji:'⚠️', label:'Stressed',    color:'var(--mod)',  advice:'Early foliar stress detected. Inspect trunk within 2 weeks for resin leakage or initial borer entry holes.' },
+  infected:    { emoji:'🚨', label:'Infected',    color:'var(--high)', advice:'High probability of active Sal Heartwood Borer (Hoplocerambyx spinicornis) infestation. Flag for FRI assessment immediately.' },
+  non_foliage: { emoji:'🚫', label:'Not a Tree',  color:'#f06060',     advice:'Non-botanical image detected (document, certificate, or screen capture). Please photograph an actual tree trunk, bark, or canopy.' },
 }
 
 function GPSBlock({ location, loading, permissionState, refresh }) {
@@ -146,8 +147,8 @@ export default function FieldReport() {
                   {image ? (
                     <div className="camera-preview-wrap">
                       <img src={image} alt="Sal Tree Preview" className="camera-preview" />
-                      <div className="preview-badge">
-                        <Leaf size={12} /> Sal Specimen Ready
+                      <div className="preview-badge" style={result?.label === 'non_foliage' ? {borderColor:'rgba(240,96,96,0.6)', color:'#f06060'} : {}}>
+                        <Leaf size={12} /> {result?.label === 'non_foliage' ? 'Non-Botanical Image' : 'Tree Specimen'}
                       </div>
                     </div>
                   ) : (
@@ -252,37 +253,60 @@ export default function FieldReport() {
                       {info.advice}
                     </div>
 
-                    {/* Form */}
-                    <div className="result-form">
-                      <div className="form-group">
-                        <label className="form-label">Severity Assessment</label>
-                        <select className="form-select" value={severity} onChange={e=>setSeverity(e.target.value)}>
-                          <option value="low">Low — isolated, no spread</option>
-                          <option value="moderate">Moderate — small cluster</option>
-                          <option value="high">High — wide area affected</option>
-                          <option value="critical">Critical — immediate action</option>
-                        </select>
-                      </div>
-                      <div className="form-group">
-                        <label className="form-label">Field Notes</label>
-                        <textarea className="form-textarea"
-                          rows={3}
-                          placeholder="Bark exit holes, resin extrusion, crown wilting, or adjacent infected trees…"
-                          value={notes} onChange={e=>setNotes(e.target.value)}
-                        />
-                      </div>
-                      <div className="field-action-bar">
-                        <button className="btn btn-ghost btn-action" onClick={reset}>
-                          <RefreshCw size={14}/> Reset
-                        </button>
-                        <button className="btn btn-primary btn-action" onClick={save} disabled={saving}>
-                          {saving
-                            ? <><RefreshCw size={14} style={{animation:'spin 1s linear infinite'}}/> Saving Report…</>
-                            : <><Send size={14}/> {online ? 'Submit Report' : 'Save Offline'}</>
-                          }
+                    {/* Form or Non-Tree Warning */}
+                    {result.label === 'non_foliage' ? (
+                      <div style={{ padding: '0 20px 20px', textAlign: 'center' }}>
+                        <div style={{
+                          background: 'rgba(240, 96, 96, 0.10)',
+                          border: '1px solid rgba(240, 96, 96, 0.35)',
+                          borderRadius: 'var(--r-lg)',
+                          padding: '16px',
+                          marginBottom: '16px',
+                          color: 'var(--text-secondary)',
+                          fontSize: '13px',
+                          lineHeight: 1.6
+                        }}>
+                          <div style={{ color: '#f06060', fontWeight: 700, fontSize: '14px', marginBottom: '4px' }}>
+                            ⚠ Specimen Verification Failed
+                          </div>
+                          The system detected a document, certificate, or non-botanical graphic instead of a tree. Please capture a real Sal tree trunk, canopy, or bark sample to perform diagnosis.
+                        </div>
+                        <button className="btn btn-primary btn-action btn-full" onClick={reset}>
+                          <Camera size={15}/> Retake Tree Photo
                         </button>
                       </div>
-                    </div>
+                    ) : (
+                      <div className="result-form">
+                        <div className="form-group">
+                          <label className="form-label">Severity Assessment</label>
+                          <select className="form-select" value={severity} onChange={e=>setSeverity(e.target.value)}>
+                            <option value="low">Low — isolated, no spread</option>
+                            <option value="moderate">Moderate — small cluster</option>
+                            <option value="high">High — wide area affected</option>
+                            <option value="critical">Critical — immediate action</option>
+                          </select>
+                        </div>
+                        <div className="form-group">
+                          <label className="form-label">Field Notes</label>
+                          <textarea className="form-textarea"
+                            rows={3}
+                            placeholder="Bark exit holes, resin extrusion, crown wilting, or adjacent infected trees…"
+                            value={notes} onChange={e=>setNotes(e.target.value)}
+                          />
+                        </div>
+                        <div className="field-action-bar">
+                          <button className="btn btn-ghost btn-action" onClick={reset}>
+                            <RefreshCw size={14}/> Reset
+                          </button>
+                          <button className="btn btn-primary btn-action" onClick={save} disabled={saving}>
+                            {saving
+                              ? <><RefreshCw size={14} style={{animation:'spin 1s linear infinite'}}/> Saving Report…</>
+                              : <><Send size={14}/> {online ? 'Submit Report' : 'Save Offline'}</>
+                            }
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 

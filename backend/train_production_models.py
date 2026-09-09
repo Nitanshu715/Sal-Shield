@@ -168,49 +168,92 @@ def train_cnn_model():
     IMG_SIZE = 224
     NUM_CLASSES = 3
 
-    print("Generating botanical training samples...")
+    print("Generating botanical training samples with Sal borer pathology...")
     np.random.seed(101)
-    n_img_per_class = 60
+    n_img_per_class = 120
     X_train = []
     y_train = []
 
     for cls_idx in range(NUM_CLASSES):
         for _ in range(n_img_per_class):
             img_arr = np.zeros((IMG_SIZE, IMG_SIZE, 3), dtype=np.float32)
-            grain = np.random.normal(0, 0.05, (IMG_SIZE, IMG_SIZE, 3))
+            grain = np.random.normal(0, 0.04, (IMG_SIZE, IMG_SIZE, 3))
             
-            if cls_idx == 0:  # Healthy foliage: vibrant green
-                r = np.random.uniform(0.15, 0.30)
-                g = np.random.uniform(0.55, 0.85)
-                b = np.random.uniform(0.15, 0.32)
+            if cls_idx == 0:  # Healthy Shorea robusta canopy: lush chlorophyll green
+                g = np.random.uniform(0.52, 0.78)
+                r = g * np.random.uniform(0.28, 0.44)
+                b = g * np.random.uniform(0.22, 0.40)
                 img_arr[:, :, 0] = r
                 img_arr[:, :, 1] = g
                 img_arr[:, :, 2] = b
-                for _ in range(5):
-                    x0, y0 = np.random.randint(0, IMG_SIZE, 2)
-                    img_arr[max(0, x0-2):min(IMG_SIZE, x0+2), :, 1] *= 1.15
-            elif cls_idx == 1:  # Stressed: chlorosis (yellowing canopy)
-                r = np.random.uniform(0.65, 0.85)
-                g = np.random.uniform(0.60, 0.80)
-                b = np.random.uniform(0.10, 0.25)
+
+                # Foliar leaf cluster clumps
+                for _ in range(np.random.randint(25, 45)):
+                    cx = np.random.randint(10, IMG_SIZE - 10)
+                    cy = np.random.randint(10, IMG_SIZE - 10)
+                    rad = np.random.randint(8, 22)
+                    y_g, x_g = np.ogrid[:IMG_SIZE, :IMG_SIZE]
+                    mask = (x_g - cx)**2 + (y_g - cy)**2 <= rad**2
+                    img_arr[mask, 1] *= np.random.uniform(1.10, 1.30)
+                    img_arr[mask, 0] *= 0.90
+
+            elif cls_idx == 1:  # Stressed: chlorosis, loss of chlorophyll, yellowing/orange canopy
+                r = np.random.uniform(0.58, 0.80)
+                g = np.random.uniform(0.52, 0.74)
+                b = np.random.uniform(0.12, 0.26)
                 img_arr[:, :, 0] = r
                 img_arr[:, :, 1] = g
                 img_arr[:, :, 2] = b
-                patch_x = np.random.randint(20, IMG_SIZE-20)
-                patch_y = np.random.randint(20, IMG_SIZE-20)
-                img_arr[patch_x-20:patch_x+20, patch_y-20:patch_y+20, 0] *= 1.2
-            else:  # Infected: brown necrosis, bark frass, dark beetle exit holes
-                r = np.random.uniform(0.40, 0.60)
-                g = np.random.uniform(0.25, 0.40)
-                b = np.random.uniform(0.12, 0.25)
-                img_arr[:, :, 0] = r
-                img_arr[:, :, 1] = g
-                img_arr[:, :, 2] = b
-                for _ in range(8):
-                    hx = np.random.randint(15, IMG_SIZE-15)
-                    hy = np.random.randint(15, IMG_SIZE-15)
-                    rad = np.random.randint(4, 12)
-                    img_arr[max(0, hx-rad):min(IMG_SIZE, hx+rad), max(0, hy-rad):min(IMG_SIZE, hy+rad), :] = np.random.uniform(0.02, 0.12)
+
+                # Chlorosis patches
+                for _ in range(np.random.randint(15, 30)):
+                    cx = np.random.randint(15, IMG_SIZE - 15)
+                    cy = np.random.randint(15, IMG_SIZE - 15)
+                    rx = np.random.randint(10, 28)
+                    ry = np.random.randint(10, 28)
+                    y_g, x_g = np.ogrid[:IMG_SIZE, :IMG_SIZE]
+                    mask = ((x_g - cx)**2 / rx**2 + (y_g - cy)**2 / ry**2) <= 1.0
+                    img_arr[mask, 0] = np.clip(img_arr[mask, 0] * 1.25, 0, 1)
+                    img_arr[mask, 1] = np.clip(img_arr[mask, 1] * 1.12, 0, 1)
+                    img_arr[mask, 2] *= 0.55
+
+            else:  # Infected: Sal Heartwood Borer (Hoplocerambyx spinicornis) infested trunk bark
+                base_r = np.random.uniform(0.36, 0.52)
+                base_g = base_r * np.random.uniform(0.68, 0.84)
+                base_b = base_g * np.random.uniform(0.55, 0.75)
+                img_arr[:, :, 0] = base_r
+                img_arr[:, :, 1] = base_g
+                img_arr[:, :, 2] = base_b
+
+                # Vertical trunk furrows (Sal bark characteristic longitudinal fissures)
+                for _ in range(np.random.randint(8, 16)):
+                    col = np.random.randint(4, IMG_SIZE - 4)
+                    width = np.random.randint(2, 6)
+                    img_arr[:, max(0, col - width):min(IMG_SIZE, col + width), :] *= np.random.uniform(0.35, 0.65)
+
+                # Frass (wood dust accumulated by borer larvae pushing out masticated wood)
+                for _ in range(np.random.randint(5, 12)):
+                    fx = np.random.randint(20, IMG_SIZE - 20)
+                    fy = np.random.randint(20, IMG_SIZE - 20)
+                    frass_rx = np.random.randint(12, 30)
+                    frass_ry = np.random.randint(10, 24)
+                    y_g, x_g = np.ogrid[:IMG_SIZE, :IMG_SIZE]
+                    mask = ((x_g - fx)**2 / frass_rx**2 + (y_g - fy)**2 / frass_ry**2) <= 1.0
+                    img_arr[mask, 0] = np.random.uniform(0.65, 0.85)
+                    img_arr[mask, 1] = np.random.uniform(0.50, 0.70)
+                    img_arr[mask, 2] = np.random.uniform(0.20, 0.35)
+
+                # Larval boreholes / beetle exit apertures (characteristic dark elliptical cavities)
+                for _ in range(np.random.randint(3, 8)):
+                    hx = np.random.randint(25, IMG_SIZE - 25)
+                    hy = np.random.randint(25, IMG_SIZE - 25)
+                    rx = np.random.randint(5, 12)
+                    ry = np.random.randint(8, 18)
+                    y_g, x_g = np.ogrid[:IMG_SIZE, :IMG_SIZE]
+                    hole_mask = ((x_g - hx)**2 / rx**2 + (y_g - hy)**2 / ry**2) <= 1.0
+                    img_arr[hole_mask, 0] = np.random.uniform(0.02, 0.08)
+                    img_arr[hole_mask, 1] = np.random.uniform(0.02, 0.07)
+                    img_arr[hole_mask, 2] = np.random.uniform(0.01, 0.06)
 
             img_arr = np.clip(img_arr + grain, 0.0, 1.0)
             X_train.append(img_arr)
@@ -218,6 +261,11 @@ def train_cnn_model():
 
     X_train = np.array(X_train, dtype=np.float32)
     y_train = tf.keras.utils.to_categorical(y_train, num_classes=NUM_CLASSES)
+
+    from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
+
+    # Scale to [-1, 1] as required by MobileNetV2
+    X_train_proc = preprocess_input(X_train * 255.0)
 
     base_model = MobileNetV2(
         input_shape=(IMG_SIZE, IMG_SIZE, 3),
@@ -228,7 +276,6 @@ def train_cnn_model():
 
     x = base_model.output
     x = layers.GlobalAveragePooling2D()(x)
-    x = layers.BatchNormalization()(x)
     x = layers.Dense(128, activation='relu')(x)
     x = layers.Dropout(0.3)(x)
     outputs = layers.Dense(NUM_CLASSES, activation='softmax')(x)
@@ -241,10 +288,10 @@ def train_cnn_model():
     )
 
     print("Training CNN head...")
-    model.fit(X_train, y_train, epochs=6, batch_size=16, verbose=1)
+    model.fit(X_train_proc, y_train, epochs=8, batch_size=16, verbose=1)
 
     base_model.trainable = True
-    for layer in base_model.layers[:-25]:
+    for layer in base_model.layers[:-35]:
         layer.trainable = False
 
     model.compile(
@@ -253,7 +300,7 @@ def train_cnn_model():
         metrics=['accuracy']
     )
     print("Fine-tuning top layers...")
-    model.fit(X_train, y_train, epochs=4, batch_size=16, verbose=1)
+    model.fit(X_train_proc, y_train, epochs=6, batch_size=16, verbose=1)
 
     h5_path = os.path.join(MODEL_DIR, 'tree_classifier.h5')
     model.save(h5_path)
