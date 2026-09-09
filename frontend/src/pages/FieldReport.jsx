@@ -224,8 +224,8 @@ export default function FieldReport() {
                       <div className="conf-fill" style={{width:`${result.confidence}%`, background:info.color}}/>
                     </div>
 
-                    {/* Multi-class probability breakdown */}
-                    {result.probabilities && (
+                    {/* Multi-class probability breakdown - only show for botanical foliage */}
+                    {result.label !== 'non_foliage' && result.probabilities && (
                       <div className="prob-container">
                         <div className="prob-heading">
                           Class Probability Distribution · {result.model || 'CNN MobileNetV2'}

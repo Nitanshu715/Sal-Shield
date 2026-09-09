@@ -46,6 +46,7 @@ export async function mockPredictImage(file) {
             const totalPixels = S * S
 
             let whitePaperPixels = 0
+            let uiScreenshotPixels = 0
             let healthyGreenPixels = 0
             let yellowStressPixels = 0
             let barkBrownPixels = 0
@@ -61,9 +62,20 @@ export async function mockPredictImage(file) {
 
               rSum += r; gSum += g; bSum += b
 
-              // 1. Check for paper / document / screenshot / certificate (high uniform brightness)
+              // Saturation & brightness metrics
+              const maxC = Math.max(r, g, b)
+              const minC = Math.min(r, g, b)
+              const sat = maxC - minC
+              const brightness = (r + g + b) / 3
+
+              // 1. Check for paper / documents / certificates (bright white)
               if (r > 0.78 && g > 0.78 && b > 0.78) {
                 whitePaperPixels++
+              }
+
+              // 1b. Check for digital UI / screenshots / charts (neutral gray / white / low saturation)
+              if (sat < 0.12 && (brightness > 0.35 || brightness < 0.10)) {
+                uiScreenshotPixels++
               }
 
               // 2. Healthy green canopy
@@ -93,20 +105,28 @@ export async function mockPredictImage(file) {
             }
 
             const paperRatio = whitePaperPixels / totalPixels
+            const uiRatio = uiScreenshotPixels / totalPixels
             const greenRatio = healthyGreenPixels / totalPixels
             const yellowRatio = yellowStressPixels / totalPixels
             const barkRatio = barkBrownPixels / totalPixels
             const holeRatio = boreHolePixels / totalPixels
             const frassRatio = frassDustPixels / totalPixels
 
-            // If user uploaded a document, certificate, receipt, or plain white image:
-            if (paperRatio > 0.35) {
+            // Specimen Rejection Filter:
+            // Detect non-foliage inputs (certificates, documents, digital screenshots, app UI, spreadsheets)
+            const isNonBotanical =
+              paperRatio > 0.30 ||
+              (uiRatio > 0.35 && greenRatio < 0.08 && barkRatio < 0.12) ||
+              (greenRatio < 0.04 && barkRatio < 0.06 && yellowRatio < 0.04)
+
+            if (isNonBotanical) {
+              const confidence = Math.min(99, Math.max(88, Math.round((Math.max(paperRatio, uiRatio)) * 100) || 94))
               resolve({
                 label: 'non_foliage',
-                confidence: Math.round(paperRatio * 100),
+                confidence,
                 probabilities: { healthy: 0, stressed: 0, infected: 0 },
                 source: 'edge-botanical-verifier',
-                model: 'sal-shield-verifier-v3'
+                model: 'sal-shield-botanical-verifier-v4'
               })
               return
             }
